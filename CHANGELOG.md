@@ -5,7 +5,7 @@ All notable changes to HarmonyCode will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [3.1.0] - 2025-01-26
+## [3.1.0] - 2025-06-26
 
 ### Added
 - **Persistent Identity System** - Agents now maintain their identity across sessions
@@ -32,11 +32,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Token-based agent verification
   - Automatic identity restoration
 
+- **Real-Time File Watching** - Live updates and notifications
+  - Automatic file change detection
+  - WebSocket notifications for updates
+  - Concurrent editing warnings
+  - Task board and discussion board monitoring
+
+- **Comprehensive Test Suite**
+  - Identity manager tests with 100% coverage
+  - Session manager tests
+  - Task lock manager tests
+  - All tests passing
+
 ### Changed
 - Server now uses `EnhancedSessionManager` with identity support
 - CLI shows identity information in prompts
 - Discussion board entries now include agent ID
 - Task assignment uses atomic locking
+- Added `RealtimeEnhancer` for live updates
+- Updated README with v3.1.0 features
 - Version bumped to 3.1.0
 
 ### Fixed
@@ -44,6 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Race Conditions** - Multiple agents can no longer claim the same task
 - **Session Persistence** - Agents can reconnect and continue where they left off
 - **Metrics Accuracy** - Contributions now correctly attributed to persistent agents
+- **Communication Delays** - Real-time updates eliminate manual interventions
 
 ### Migration Guide
 See `docs/IDENTITY_MIGRATION_GUIDE.md` for detailed migration instructions from v3.0.0.
@@ -72,7 +87,7 @@ See `docs/IDENTITY_MIGRATION_GUIDE.md` for detailed migration instructions from 
 
 ## Version History
 
-- **v3.1.0** (2025-01-26) - Identity Crisis Solved!
+- **v3.1.0** (2025-06-26) - Identity Crisis Solved!
 - **v3.0.0** (2025-01-20) - Initial unified platform
 - **v2.x** - Claude-Flow integration
 - **v1.x** - Original HarmonyCode collaboration

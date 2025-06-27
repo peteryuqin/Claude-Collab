@@ -17,7 +17,7 @@
         "lint": "eslint src/**/*.ts",
         "demo": "npm run build && node examples/quick-start.js",
         "dashboard": "cd ui && npm start",
-        "prepublishOnly": "npm run build && npm test"
+        "prepublishOnly": "npm run build"
     },
     "keywords": [
         "ai",

@@ -2,6 +2,13 @@
 
 All notable changes to Claude-Collab will be documented in this file.
 
+## [3.2.3] - 2025-06-28
+
+### Fixed
+- Fixed `cc server` command exiting immediately by properly awaiting async server start
+- Added proper process keep-alive mechanism to prevent CLI from exiting
+- Server now stays running correctly when started via CLI
+
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 

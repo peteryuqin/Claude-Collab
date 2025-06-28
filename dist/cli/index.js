@@ -135,12 +135,33 @@ program
     `));
     console.log(chalk.yellow(`Starting server on port ${options.port}...`));
     console.log(chalk.gray(`Anti-echo-chamber: ${options.antiEcho ? 'ENABLED' : 'DISABLED'}`));
-    // In production, would import and start the actual server
-    // For now, show what would happen
-    console.log(chalk.green(`\n✅ Server running at ws://localhost:${options.port}`));
-    console.log(chalk.gray('\nPress Ctrl+C to stop'));
-    // Keep process alive
-    process.stdin.resume();
+    // Import and start the actual server
+    const { ClaudeCollabServer } = require('../dist/core/server');
+    const server = new ClaudeCollabServer({
+        port: parseInt(options.port),
+        enableAntiEcho: options.antiEcho,
+        strictMode: options.strict
+    });
+    try {
+        await server.start();
+        // Keep process alive
+        process.stdin.resume();
+        if (process.stdin.isTTY) {
+            process.stdin.setRawMode(true);
+        }
+        // Handle graceful shutdown
+        process.on('SIGINT', async () => {
+            console.log(chalk.yellow('\n\nShutting down server...'));
+            await server.stop();
+            process.exit(0);
+        });
+        // Prevent process from exiting - max timeout to keep event loop active
+        setInterval(() => { }, 1 << 30);
+    }
+    catch (error) {
+        console.error(chalk.red('Failed to start server:'), error.message);
+        process.exit(1);
+    }
 });
 // Register new agent identity
 program

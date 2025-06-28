@@ -1,0 +1,12 @@
+{
+  "alice": {
+    "token": "e754b56ac02b4ad24b4a57142276e7980aeca5d62b85044d25d04bb0be16211a",
+    "agentId": "agent-56f62c1f0f7006a7",
+    "lastUsed": "2025-06-28T04:05:47.997Z"
+  },
+  "bob": {
+    "token": "35c5c79dbe44a33f3515610410258c445287dc5844fd498d0e0f9642942b5505",
+    "agentId": "agent-e106cd206dd0cb99",
+    "lastUsed": "2025-06-28T04:07:48.820Z"
+  }
+}

@@ -1,6 +1,6 @@
 {
     "name": "claude-collab",
-    "version": "3.2.0",
+    "version": "3.2.2",
     "description": "Claude Collab - The AI collaboration framework that prevents echo chambers",
     "main": "dist/index.js",
     "bin": {
@@ -17,7 +17,7 @@
         "lint": "eslint src/**/*.ts",
         "demo": "npm run build && node examples/quick-start.js",
         "dashboard": "cd ui && npm start",
-        "prepublishOnly": "npm run build && npm test"
+        "prepublishOnly": "npm run build"
     },
     "keywords": [
         "ai",

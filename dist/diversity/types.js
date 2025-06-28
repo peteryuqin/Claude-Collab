@@ -1,6 +1,6 @@
 "use strict";
 /**
- * HarmonyCode v3.0.0 - Diversity Type Definitions
+ * Claude-Collab v3.0.0 - Diversity Type Definitions
  * Core types for the anti-echo-chamber system
  */
 Object.defineProperty(exports, "__esModule", { value: true });

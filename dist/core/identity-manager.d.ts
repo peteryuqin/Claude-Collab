@@ -1,5 +1,5 @@
 /**
- * HarmonyCode v3.2.0 - Identity Manager
+ * Claude-Collab v3.2.0 - Identity Manager
  * Implements persistent agent identity separate from roles and sessions
  * Enhanced with unique name enforcement and session cleanup (v3.2)
  */

@@ -1,5 +1,5 @@
 /**
- * HarmonyCode v3.1.0 - Enhanced Session Manager Tests
+ * Claude-Collab v3.1.0 - Enhanced Session Manager Tests
  * Tests for session management with identity integration
  */
 
@@ -16,7 +16,7 @@ describe('EnhancedSessionManager', () => {
   let sessionManager: EnhancedSessionManager;
   let identityManager: IdentityManager;
   let mockWs: jest.Mocked<WebSocket>;
-  const testWorkspace = '.test-harmonycode';
+  const testWorkspace = '.test-claude-collab';
   
   beforeEach(() => {
     // Create test workspace

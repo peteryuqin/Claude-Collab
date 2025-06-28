@@ -1,5 +1,5 @@
 /**
- * HarmonyCode v3.0.0 - Orchestration Engine
+ * Claude-Collab v3.0.0 - Orchestration Engine
  * Integrates Claude-Flow orchestration capabilities with real-time collaboration
  */
 import { EventEmitter } from 'events';

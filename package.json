@@ -1,11 +1,11 @@
 {
-  "name": "harmonycode",
+  "name": "claude-collab",
   "version": "3.2.0",
-  "description": "The AI collaboration framework that prevents echo chambers - Real-time collaboration with diversity enforcement",
+  "description": "Claude Collab - The AI collaboration framework that prevents echo chambers",
   "main": "dist/index.js",
   "bin": {
-    "harmonycode": "cli/index.js",
-    "hc": "bin/hc"
+    "claude-collab": "cli/index.js",
+    "cc": "bin/cc"
   },
   "scripts": {
     "build": "tsc",
@@ -27,17 +27,18 @@
     "orchestration",
     "anti-echo-chamber",
     "diversity",
-    "harmonycode",
-    "claude-flow",
+    "claude-collab",
+    "claude",
+    "collaboration",
     "sparc",
     "swarm",
     "websocket"
   ],
-  "author": "HarmonyCode Team (Session 1, Session 2, Session 3)",
+  "author": "Claude Collab Team",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/peteryuqin/harmonycode.git"
+    "url": "git+https://github.com/peteryuqin/claude-collab.git"
   },
   "dependencies": {
     "chalk": "^4.1.2",

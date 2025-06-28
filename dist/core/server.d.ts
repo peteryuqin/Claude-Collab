@@ -1,5 +1,5 @@
 /**
- * HarmonyCode v3.2.0 - Core WebSocket Server
+ * Claude-Collab v3.2.0 - Core WebSocket Server
  * Real-time collaboration with anti-echo-chamber enforcement
  * Enhanced with unique name enforcement and session cleanup
  */
@@ -18,7 +18,7 @@ export interface ServerConfig {
         maxAgents: number;
     };
 }
-export declare class HarmonyCodeServer extends EventEmitter {
+export declare class ClaudeCollabServer extends EventEmitter {
     private wss;
     private config;
     private sessions;
@@ -159,5 +159,5 @@ export declare class HarmonyCodeServer extends EventEmitter {
      */
     stop(): Promise<void>;
 }
-export default HarmonyCodeServer;
+export default ClaudeCollabServer;
 //# sourceMappingURL=server.d.ts.map

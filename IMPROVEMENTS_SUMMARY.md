@@ -1,8 +1,8 @@
-# HarmonyCode v3.1.0 - Identity Crisis Solved! 🎉
+# Claude-Collab v3.1.0 - Identity Crisis Solved! 🎉
 
 ## Summary of Improvements
 
-Based on the user feedback from building the HarmonyCode website, I've implemented critical improvements to solve the identity crisis and other major issues.
+Based on the user feedback from building the Claude-Collab website, I've implemented critical improvements to solve the identity crisis and other major issues.
 
 ## What I've Implemented
 
@@ -18,20 +18,20 @@ Based on the user feedback from building the HarmonyCode website, I've implement
 **How It Works**:
 ```bash
 # Before: Role = Identity (BROKEN)
-harmonycode join "Frontend-Dev"  # I am Frontend-Dev
-harmonycode join "Backend-Dev"   # Now I'm a different person?!
+claude-collab join "Frontend-Dev"  # I am Frontend-Dev
+claude-collab join "Backend-Dev"   # Now I'm a different person?!
 
 # After: Identity ≠ Role (FIXED)
-harmonycode register alice       # I am alice (agent-3f4a2b)
-harmonycode join alice --role frontend  # alice as frontend dev
-harmonycode switch-role backend         # Still alice, new role!
+claude-collab register alice       # I am alice (agent-3f4a2b)
+claude-collab join alice --role frontend  # alice as frontend dev
+claude-collab switch-role backend         # Still alice, new role!
 ```
 
 ### 2. ✅ Enhanced CLI Commands
 
 **New Commands**:
-- `harmonycode register <name>` - Create persistent agent identity
-- `harmonycode whoami` - Show saved identities
+- `claude-collab register <name>` - Create persistent agent identity
+- `claude-collab whoami` - Show saved identities
 - `switch-role <role>` - Change role while maintaining identity
 - `history` - View contribution history
 
@@ -84,7 +84,7 @@ harmonycode switch-role backend         # Still alice, new role!
 - Manages persistent agent identities
 - Handles authentication and registration
 - Tracks role and perspective changes
-- Persists to `.harmonycode/identities.json`
+- Persists to `.claude-collab/identities.json`
 
 ### 2. Enhanced Session Manager (`core/session-manager-enhanced.ts`)
 - Integrates identity with WebSocket sessions
@@ -103,7 +103,7 @@ harmonycode switch-role backend         # Still alice, new role!
 While I've solved the identity crisis, there are other improvements from the feedback that could be implemented:
 
 1. **Task Race Conditions** - Need atomic locking for task claims
-2. **Command Shortcuts** - Add aliases like `hc` for `harmonycode`
+2. **Command Shortcuts** - Add aliases like `cc` for `claude-collab`
 3. **Enhanced Progress Tracking** - Structured progress with percentages
 4. **Integration Tests** - Comprehensive testing of identity persistence
 
@@ -111,13 +111,13 @@ While I've solved the identity crisis, there are other improvements from the fee
 
 ```bash
 # First time setup
-$ harmonycode register alice
+$ claude-collab register alice
 ✓ Agent registered: alice
   Agent ID: agent-3f4a2b
   Authentication token saved!
 
 # Join and work
-$ harmonycode join alice --role researcher
+$ claude-collab join alice --role researcher
 ✓ Connected as alice
   Agent ID: agent-3f4a2b
   Welcome! This is your first session.
@@ -127,7 +127,7 @@ alice> switch-role architect
 alice> say "Now designing the system"
 
 # Later session
-$ harmonycode join alice
+$ claude-collab join alice
 ✓ Connected as alice
   Welcome back! Your history:
   Total sessions: 2
@@ -137,7 +137,7 @@ $ harmonycode join alice
 
 ## Impact
 
-This implementation directly addresses the most critical issue from user feedback - the identity crisis that made HarmonyCode v3 confusing and metrics meaningless. Agents can now:
+This implementation directly addresses the most critical issue from user feedback - the identity crisis that made Claude-Collab v3 confusing and metrics meaningless. Agents can now:
 
 - Maintain persistent identity across sessions
 - Change roles without becoming "different people"
@@ -148,4 +148,4 @@ The ghost of "talking to myself without knowing it" has been banished! 👻✨
 
 ---
 
-**Note**: This implementation maintains full compatibility with HarmonyCode's anti-echo-chamber features while solving the identity crisis. The two systems work together harmoniously.
+**Note**: This implementation maintains full compatibility with Claude-Collab's anti-echo-chamber features while solving the identity crisis. The two systems work together harmoniously.

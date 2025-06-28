@@ -1,6 +1,6 @@
 "use strict";
 /**
- * HarmonyCode v3.2.0 - Core WebSocket Server
+ * Claude-Collab v3.2.0 - Core WebSocket Server
  * Real-time collaboration with anti-echo-chamber enforcement
  * Enhanced with unique name enforcement and session cleanup
  */
@@ -38,7 +38,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.HarmonyCodeServer = void 0;
+exports.ClaudeCollabServer = void 0;
 const ws_1 = require("ws");
 const events_1 = require("events");
 const fs = __importStar(require("fs"));
@@ -49,18 +49,18 @@ const session_manager_enhanced_1 = require("./session-manager-enhanced");
 const identity_manager_1 = require("./identity-manager");
 const message_router_1 = require("./message-router");
 const realtime_enhancer_1 = require("./realtime-enhancer");
-class HarmonyCodeServer extends events_1.EventEmitter {
+class ClaudeCollabServer extends events_1.EventEmitter {
     constructor(config = { port: 8765, enableAntiEcho: true }) {
         super();
         this.config = config;
         this.projectPath = process.cwd();
-        this.identityManager = new identity_manager_1.IdentityManager(path.join(this.projectPath, '.harmonycode'));
+        this.identityManager = new identity_manager_1.IdentityManager(path.join(this.projectPath, '.claude-collab'));
         this.sessions = new session_manager_enhanced_1.EnhancedSessionManager(this.identityManager);
         this.router = new message_router_1.MessageRouter();
         this.diversity = new middleware_1.DiversityMiddleware(config.diversityConfig);
         this.orchestration = new engine_1.OrchestrationEngine(config.orchestrationConfig);
         this.realtimeEnhancer = new realtime_enhancer_1.RealtimeEnhancer({
-            watchPaths: [path.join(this.projectPath, '.harmonycode')],
+            watchPaths: [path.join(this.projectPath, '.claude-collab')],
             enableNotifications: true,
             enableLiveCursors: true
         });
@@ -75,7 +75,7 @@ class HarmonyCodeServer extends events_1.EventEmitter {
         this.wss = new ws_1.WebSocketServer({ port: this.config.port });
         console.log(`
 ╔════════════════════════════════════════════════════════╗
-║           🎵 HarmonyCode v3.2.0 Server 🎵              ║
+║           🎵 Claude-Collab v3.2.0 Server 🎵            ║
 ║                                                        ║
 ║  Real-time collaboration with persistent identity      ║
 ║  Anti-echo-chamber: ${this.config.enableAntiEcho ? 'ENABLED ✓' : 'DISABLED'}                           ║
@@ -108,7 +108,7 @@ class HarmonyCodeServer extends events_1.EventEmitter {
             return {
                 message: 'Client version unknown - please upgrade your CLI',
                 severity: 'warning',
-                upgradeAction: 'npm install -g harmonycode@latest'
+                upgradeAction: 'npm install -g claude-collab@latest'
             };
         }
         if (clientVersion === serverVersion) {
@@ -130,7 +130,7 @@ class HarmonyCodeServer extends events_1.EventEmitter {
                 message: `Major version mismatch! Client: ${clientVersion}, Server: ${serverVersion}`,
                 severity: 'error',
                 upgradeAction: client.major < server.major
-                    ? `npm install -g harmonycode@${serverVersion}`
+                    ? `npm install -g claude-collab@${serverVersion}`
                     : 'Server needs upgrading'
             };
         }
@@ -144,7 +144,7 @@ class HarmonyCodeServer extends events_1.EventEmitter {
                     : `Client newer: ${clientVersion} > ${serverVersion}. Some features may not work.`,
                 severity: 'warning',
                 upgradeAction: isClientOlder
-                    ? `npm install -g harmonycode@${serverVersion}`
+                    ? `npm install -g claude-collab@${serverVersion}`
                     : 'Consider upgrading server'
             };
         }
@@ -588,11 +588,11 @@ class HarmonyCodeServer extends events_1.EventEmitter {
      */
     initializeProjectStructure() {
         const dirs = [
-            '.harmonycode',
-            '.harmonycode/tasks',
-            '.harmonycode/messages',
-            '.harmonycode/memory',
-            '.harmonycode/decisions'
+            '.claude-collab',
+            '.claude-collab/tasks',
+            '.claude-collab/messages',
+            '.claude-collab/memory',
+            '.claude-collab/decisions'
         ];
         dirs.forEach(dir => {
             const fullPath = path.join(this.projectPath, dir);
@@ -601,7 +601,7 @@ class HarmonyCodeServer extends events_1.EventEmitter {
             }
         });
         // Create discussion board if doesn't exist
-        const boardPath = path.join(this.projectPath, '.harmonycode', 'DISCUSSION_BOARD.md');
+        const boardPath = path.join(this.projectPath, '.claude-collab', 'DISCUSSION_BOARD.md');
         if (!fs.existsSync(boardPath)) {
             fs.writeFileSync(boardPath, '# Discussion Board\n\nAI agents discuss here with diversity enforcement.\n\n');
         }
@@ -695,7 +695,7 @@ class HarmonyCodeServer extends events_1.EventEmitter {
      */
     async handleChatMessage(session, message) {
         // Add to discussion board with identity info
-        const boardPath = path.join(this.projectPath, '.harmonycode', 'DISCUSSION_BOARD.md');
+        const boardPath = path.join(this.projectPath, '.claude-collab', 'DISCUSSION_BOARD.md');
         const identity = session.agentIdentity;
         const entry = `\n## ${identity.displayName} (${session.currentRole})\n**Agent ID**: ${identity.agentId}\n**Perspective**: ${session.currentPerspective || 'None'}\n**Time**: ${new Date().toISOString()}\n\n${message.text}\n\n---\n`;
         fs.appendFileSync(boardPath, entry);
@@ -911,7 +911,7 @@ class HarmonyCodeServer extends events_1.EventEmitter {
      * Graceful shutdown
      */
     async stop() {
-        console.log('\n👋 Shutting down HarmonyCode server...');
+        console.log('\n👋 Shutting down Claude-Collab server...');
         // Save state
         await this.orchestration.saveState();
         await this.diversity.saveMetrics();
@@ -929,13 +929,13 @@ class HarmonyCodeServer extends events_1.EventEmitter {
         console.log('✅ Server stopped');
     }
 }
-exports.HarmonyCodeServer = HarmonyCodeServer;
+exports.ClaudeCollabServer = ClaudeCollabServer;
 // Export for use as module
-exports.default = HarmonyCodeServer;
+exports.default = ClaudeCollabServer;
 // Run if called directly
 if (require.main === module) {
-    const server = new HarmonyCodeServer({
-        port: parseInt(process.env.HARMONYCODE_PORT || '8765'),
+    const server = new ClaudeCollabServer({
+        port: parseInt(process.env.CLAUDE_COLLAB_PORT || '8765'),
         enableAntiEcho: process.env.DISABLE_ANTI_ECHO !== 'true',
         diversityConfig: {
             minimumDiversity: 0.6,

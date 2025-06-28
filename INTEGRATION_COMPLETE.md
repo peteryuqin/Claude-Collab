@@ -1,10 +1,10 @@
-# HarmonyCode v3.0.0 - Integration Complete 🎉
+# Claude-Collab v3.0.0 - Integration Complete 🎉
 
 ## What We've Built
 
-We've successfully created **HarmonyCode v3.0.0** - a unified AI collaboration platform that combines the best of three projects:
+We've successfully created **Claude-Collab v3.0.0** - a unified AI collaboration platform that combines the best of three projects:
 
-### 1. 🎵 HarmonyCode Foundation (Real-time Collaboration)
+### 1. 🎵 Claude-Collab Foundation (Real-time Collaboration)
 - WebSocket server for live agent communication
 - Conflict resolution for concurrent edits
 - Discussion boards and message passing
@@ -27,7 +27,7 @@ We've successfully created **HarmonyCode v3.0.0** - a unified AI collaboration p
 ## Architecture Overview
 
 ```
-harmonycode-v3/
+claude-collab-v3/
 ├── core/                    # WebSocket real-time engine
 │   ├── server.ts           # Main server with diversity hooks
 │   ├── session-manager.ts  # Agent session management
@@ -76,20 +76,20 @@ vote.weight = perspectiveDiversity * evidenceQuality * uniqueness;
 ### Starting a Diverse Team
 ```bash
 # Initialize project
-harmonycode init my-project
+claude-collab init my-project
 
 # Start server with anti-echo
-harmonycode server --strict
+claude-collab server --strict
 
 # Join with perspectives
-harmonycode join coder-1 --perspective optimist
-harmonycode join reviewer-1 --perspective skeptic
-harmonycode join analyst-1 --perspective analytical
+claude-collab join coder-1 --perspective optimist
+claude-collab join reviewer-1 --perspective skeptic
+claude-collab join analyst-1 --perspective analytical
 ```
 
 ### Running a Swarm
 ```bash
-harmonycode swarm "Build authentication system" \
+claude-collab swarm "Build authentication system" \
   --disagreement-quota 0.4 \
   --evidence-threshold 0.7 \
   --sparc tdd,security,architect
@@ -97,7 +97,7 @@ harmonycode swarm "Build authentication system" \
 
 ### Monitoring Diversity
 ```bash
-harmonycode monitor --diversity
+claude-collab monitor --diversity
 
 # Shows:
 # Overall diversity: 82%
@@ -116,8 +116,8 @@ harmonycode monitor --diversity
 
 ## Next Steps for Users
 
-1. **Install**: `npm install -g harmonycode@3.0.0`
-2. **Try the demo**: `harmonycode init test && cd test && node examples/quick-start/demo.js`
+1. **Install**: `npm install -g claude-collab@3.0.0`
+2. **Try the demo**: `claude-collab init test && cd test && node examples/quick-start/demo.js`
 3. **Start building**: Use for any multi-agent AI project
 4. **Contribute**: Add new perspectives, improve detection algorithms
 

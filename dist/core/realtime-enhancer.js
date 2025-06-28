@@ -1,6 +1,6 @@
 "use strict";
 /**
- * HarmonyCode v3.2.0 - Real-time Enhancer
+ * Claude-Collab v3.2.0 - Real-time Enhancer
  * Adds file watching and instant updates to improve real-time experience
  * Enhanced with session notifications and message queue
  */
@@ -51,7 +51,7 @@ class RealtimeEnhancer extends events_1.EventEmitter {
         this.activeEditors = new Map();
         this.messageQueue = new Array(); // v3.2: Message queue for batching
         this.config = {
-            watchPaths: ['.harmonycode'],
+            watchPaths: ['.claude-collab'],
             debounceMs: 100,
             enableNotifications: true,
             enableLiveCursors: true,

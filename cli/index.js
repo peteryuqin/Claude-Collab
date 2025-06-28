@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * HarmonyCode - Unified CLI
+ * Claude-Collab - Unified CLI
  * Combines real-time collaboration, orchestration, and anti-echo-chamber features
  */
 
@@ -21,31 +21,31 @@ const program = new Command();
 
 // CLI Configuration
 program
-  .name('harmonycode')
+  .name('claude-collab')
   .description('The AI collaboration framework that prevents echo chambers')
   .version(VERSION);
 
 // Initialize project
 program
   .command('init [project-name]')
-  .description('Initialize a new HarmonyCode project')
+  .description('Initialize a new Claude-Collab project')
   .option('--anti-echo', 'Enable anti-echo-chamber by default', true)
   .option('--sparc', 'Enable SPARC modes', true)
-  .action(async (projectName = 'my-harmonycode-project', options) => {
-    const spinner = ora('Initializing HarmonyCode project...').start();
+  .action(async (projectName = 'my-claude-collab-project', options) => {
+    const spinner = ora('Initializing Claude-Collab project...').start();
     
     try {
       // Create project directory
       const projectPath = path.join(process.cwd(), projectName);
       fs.mkdirSync(projectPath, { recursive: true });
       
-      // Create .harmonycode directory structure
+      // Create .claude-collab directory structure
       const dirs = [
-        '.harmonycode',
-        '.harmonycode/tasks',
-        '.harmonycode/messages', 
-        '.harmonycode/memory',
-        '.harmonycode/decisions'
+        '.claude-collab',
+        '.claude-collab/tasks',
+        '.claude-collab/messages', 
+        '.claude-collab/memory',
+        '.claude-collab/decisions'
       ];
       
       dirs.forEach(dir => {
@@ -74,13 +74,13 @@ program
       };
       
       fs.writeFileSync(
-        path.join(projectPath, '.harmonycode', 'config.json'),
+        path.join(projectPath, '.claude-collab', 'config.json'),
         JSON.stringify(config, null, 2)
       );
       
       // Create discussion board
       fs.writeFileSync(
-        path.join(projectPath, '.harmonycode', 'DISCUSSION_BOARD.md'),
+        path.join(projectPath, '.claude-collab', 'DISCUSSION_BOARD.md'),
         `# Discussion Board
 
 AI agents collaborate here with diversity enforcement.
@@ -100,23 +100,23 @@ AI agents collaborate here with diversity enforcement.
         path.join(projectPath, 'README.md'),
         `# ${projectName}
 
-A HarmonyCode v${VERSION} project with real-time AI collaboration and anti-echo-chamber protection.
+A Claude-Collab v${VERSION} project with real-time AI collaboration and anti-echo-chamber protection.
 
 ## Getting Started
 
 1. Start the server:
    \`\`\`bash
-   harmonycode server
+   claude-collab server
    \`\`\`
 
 2. Join as an agent:
    \`\`\`bash
-   harmonycode join agent1 --role coder
+   claude-collab join agent1 --role coder
    \`\`\`
 
 3. Start a swarm:
    \`\`\`bash
-   harmonycode swarm "Build a feature" --anti-echo
+   claude-collab swarm "Build a feature" --anti-echo
    \`\`\`
 
 ## Features
@@ -126,7 +126,7 @@ A HarmonyCode v${VERSION} project with real-time AI collaboration and anti-echo-
 - Swarm orchestration
 - Memory management
 
-Built with HarmonyCode v${VERSION}
+Built with Claude-Collab v${VERSION}
 `
       );
       
@@ -134,7 +134,7 @@ Built with HarmonyCode v${VERSION}
       
       console.log('\nNext steps:');
       console.log(chalk.cyan(`  cd ${projectName}`));
-      console.log(chalk.cyan('  harmonycode server'));
+      console.log(chalk.cyan('  claude-collab server'));
       
     } catch (error) {
       spinner.fail(chalk.red('Failed to initialize project'));
@@ -145,14 +145,14 @@ Built with HarmonyCode v${VERSION}
 // Start server
 program
   .command('server')
-  .description('Start HarmonyCode collaboration server')
+  .description('Start Claude-Collab collaboration server')
   .option('-p, --port <port>', 'Server port', '8765')
   .option('--no-anti-echo', 'Disable anti-echo-chamber')
   .option('--strict', 'Enable strict diversity enforcement')
   .action(async (options) => {
     console.log(chalk.cyan(`
 ╔════════════════════════════════════════════════════════╗
-║           🎵 HarmonyCode v${VERSION} Server 🎵              ║
+║           🎵 Claude-Collab v${VERSION} Server 🎵              ║
 ║                                                        ║
 ║  Real-time collaboration with diversity enforcement     ║
 ╚════════════════════════════════════════════════════════╝
@@ -206,7 +206,7 @@ program
           console.log(chalk.gray(`Default role: ${options.role}`));
           console.log(chalk.cyan('\nAuthentication token saved!'));
           console.log(chalk.yellow('\nUse this command to join:'));
-          console.log(chalk.gray(`  harmonycode join ${agentName}`));
+          console.log(chalk.gray(`  claude-collab join ${agentName}`));
           ws.close();
         } else if (message.type === 'register-failed') {
           if (message.reason === 'name-taken') {
@@ -241,11 +241,11 @@ program
   .command('whoami')
   .description('Show saved agent identities')
   .action(() => {
-    const configPath = path.join('.harmonycode', 'agent-auth.json');
+    const configPath = path.join('.claude-collab', 'agent-auth.json');
     
     if (!fs.existsSync(configPath)) {
       console.log(chalk.yellow('No saved agent identities found.'));
-      console.log(chalk.gray('Use: harmonycode register <name>'));
+      console.log(chalk.gray('Use: claude-collab register <name>'));
       return;
     }
     
@@ -286,7 +286,7 @@ program
     
     try {
       // Check for saved auth token
-      const configPath = path.join('.harmonycode', 'agent-auth.json');
+      const configPath = path.join('.claude-collab', 'agent-auth.json');
       let authToken = options.token;
       
       if (!authToken && !options.newAgent && fs.existsSync(configPath)) {
@@ -381,7 +381,7 @@ program
 
 // Helper function to save auth token
 function saveAuthToken(agentName, token, agentId) {
-  const configPath = path.join('.harmonycode', 'agent-auth.json');
+  const configPath = path.join('.claude-collab', 'agent-auth.json');
   let authData = {};
   
   try {
@@ -498,7 +498,7 @@ program
   .option('--tasks', 'Show task status')
   .option('--agents', 'Show agent status')
   .action(async (options) => {
-    console.log(chalk.cyan('\n📊 HarmonyCode Metrics\n'));
+    console.log(chalk.cyan('\n📊 Claude-Collab Metrics\n'));
     
     if (options.diversity) {
       console.log(chalk.yellow('Diversity Metrics:'));
@@ -673,7 +673,7 @@ program.on('command:*', function() {
     });
   }
   
-  console.log(chalk.cyan('\nRun "hc help" for available commands'));
+  console.log(chalk.cyan('\nRun "cc help" for available commands'));
   process.exit(1);
 });
 
@@ -706,18 +706,18 @@ function levenshteinDistance(a, b) {
 if (!process.argv.slice(2).length) {
   console.log(chalk.cyan(`
 ╔════════════════════════════════════════════════════════╗
-║        🎵 HarmonyCode v${VERSION} - AI Collaboration 🎵     ║
+║        🎵 Claude-Collab v${VERSION} - AI Collaboration 🎵     ║
 ║                                                        ║
 ║  Now with persistent identity & command aliases!       ║
 ╚════════════════════════════════════════════════════════╝
   `));
   console.log(chalk.yellow('Quick start:'));
-  console.log(chalk.gray('  hc init my-project    # Initialize new project'));
-  console.log(chalk.gray('  hc register alice     # Register agent identity'));
-  console.log(chalk.gray('  hc join alice         # Join as alice'));
-  console.log(chalk.gray('  hc tasks              # View available tasks'));
+  console.log(chalk.gray('  cc init my-project    # Initialize new project'));
+  console.log(chalk.gray('  cc register alice     # Register agent identity'));
+  console.log(chalk.gray('  cc join alice         # Join as alice'));
+  console.log(chalk.gray('  cc tasks              # View available tasks'));
   console.log();
-  console.log(chalk.cyan('Pro tip: Use "hc" instead of "harmonycode" for all commands!'));
+  console.log(chalk.cyan('Pro tip: Use "cc" instead of "claude-collab" for all commands!'));
   console.log();
   program.outputHelp();
 }

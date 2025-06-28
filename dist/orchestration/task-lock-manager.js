@@ -1,6 +1,6 @@
 "use strict";
 /**
- * HarmonyCode v3.1.0 - Task Lock Manager
+ * Claude-Collab v3.1.0 - Task Lock Manager
  * Implements atomic locking to prevent task race conditions
  */
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
@@ -42,7 +42,7 @@ const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 const events_1 = require("events");
 class TaskLockManager extends events_1.EventEmitter {
-    constructor(workspacePath = '.harmonycode') {
+    constructor(workspacePath = '.claude-collab') {
         super();
         this.locks = new Map();
         this.claims = new Map();

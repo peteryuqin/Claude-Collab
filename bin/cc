@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * HarmonyCode v3.1.0 - Short alias 'hc' for harmonycode
+ * Claude-Collab v3.2.0 - Short alias 'cc' for claude-collab
  * Improves CLI UX with shorter commands
  */
 

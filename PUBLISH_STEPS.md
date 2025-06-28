@@ -1,8 +1,8 @@
-# Publishing HarmonyCode v3.1.0 to npm
+# Publishing Claude-Collab v3.1.0 to npm
 
 ## Prerequisites
 - PR merged to main branch
-- npm account with publish access to 'harmonycode' package
+- npm account with publish access to 'claude-collab' package
 - Clean working directory
 
 ## Step-by-Step Publishing Process

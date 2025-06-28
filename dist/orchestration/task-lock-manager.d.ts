@@ -1,5 +1,5 @@
 /**
- * HarmonyCode v3.1.0 - Task Lock Manager
+ * Claude-Collab v3.1.0 - Task Lock Manager
  * Implements atomic locking to prevent task race conditions
  */
 import { EventEmitter } from 'events';

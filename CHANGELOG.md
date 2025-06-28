@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to HarmonyCode will be documented in this file.
+All notable changes to Claude-Collab will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Client sends version info on connection
   - Server performs semantic version compatibility checking
   - Color-coded warnings (yellow for minor, red for major mismatches)
-  - Specific upgrade commands provided (npm install -g harmonycode@latest)
+  - Specific upgrade commands provided (npm install -g claude-collab@latest)
 
 - **🎯 Rich Identity Cards** - Enhanced whoami command with gamification
   - Agent ranking system (Newcomer → Master Collaborator)
@@ -75,7 +75,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Technical
 - CLI reads version from package.json at runtime
 - No more hardcoded version strings in CLI output
-- Fixes the issue where `harmonycode --version` showed "3.0.0" even with v3.1.0 installed
+- Fixes the issue where `claude-collab --version` showed "3.0.0" even with v3.1.0 installed
 
 ## [3.1.0] - 2025-01-26
 
@@ -94,7 +94,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Prevents duplicate work
 
 - **Command Aliases** - Improved CLI user experience
-  - Short alias `hc` for all commands
+  - Short alias `cc` for all commands
   - Command suggestions for typos
   - Enhanced help system with quick start guide
   - Configurable aliases in `cli/aliases.json`
@@ -123,7 +123,7 @@ See `docs/IDENTITY_MIGRATION_GUIDE.md` for detailed migration instructions from 
 ## [3.0.0] - 2025-01-20
 
 ### Added
-- Initial release combining HarmonyCode, Claude-Flow, and Anti-Echo-Chamber
+- Initial release combining Claude-Collab, Claude-Flow, and Anti-Echo-Chamber
 - Real-time WebSocket collaboration
 - Anti-echo-chamber diversity enforcement
 - SPARC development modes (17 specialized roles)
@@ -149,4 +149,4 @@ See `docs/IDENTITY_MIGRATION_GUIDE.md` for detailed migration instructions from 
 - **v3.1.0** (2025-01-26) - Identity Crisis Solved!
 - **v3.0.0** (2025-01-20) - Initial unified platform
 - **v2.x** - Claude-Flow integration
-- **v1.x** - Original HarmonyCode collaboration
+- **v1.x** - Original Claude-Collab collaboration

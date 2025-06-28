@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * HarmonyCode v3.0.0 - Quick Start Demo
+ * Claude-Collab v3.0.0 - Quick Start Demo
  * Shows how echo chambers are prevented in real-time
  */
 
@@ -10,7 +10,7 @@ const chalk = require('chalk');
 
 console.log(chalk.cyan(`
 ╔════════════════════════════════════════════════════════╗
-║        🎵 HarmonyCode v3.0.0 Demo 🎵                   ║
+║        🎵 Claude-Collab v3.0.0 Demo 🎵                   ║
 ║                                                        ║
 ║  Watch AI agents try to create an echo chamber...      ║
 ║  ...and see how the system prevents it!               ║

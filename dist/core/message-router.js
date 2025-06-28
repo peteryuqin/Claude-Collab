@@ -1,6 +1,6 @@
 "use strict";
 /**
- * HarmonyCode v3.0.0 - Message Router
+ * Claude-Collab v3.0.0 - Message Router
  * Routes messages between agents with diversity checks
  */
 Object.defineProperty(exports, "__esModule", { value: true });

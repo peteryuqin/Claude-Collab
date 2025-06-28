@@ -1,5 +1,5 @@
 /**
- * HarmonyCode v3.2.0 - Identity Manager
+ * Claude-Collab v3.2.0 - Identity Manager
  * Implements persistent agent identity separate from roles and sessions
  * Enhanced with unique name enforcement and session cleanup (v3.2)
  */
@@ -77,7 +77,7 @@ export class IdentityManager {
   private nameToAgent: Map<string, string> = new Map(); // New: displayName -> agentId mapping
   private persistPath: string;
 
-  constructor(workspacePath: string = '.harmonycode') {
+  constructor(workspacePath: string = '.claude-collab') {
     this.persistPath = path.join(workspacePath, 'identities.json');
     this.loadIdentities();
   }

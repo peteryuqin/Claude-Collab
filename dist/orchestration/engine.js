@@ -1,6 +1,6 @@
 "use strict";
 /**
- * HarmonyCode v3.0.0 - Orchestration Engine
+ * Claude-Collab v3.0.0 - Orchestration Engine
  * Integrates Claude-Flow orchestration capabilities with real-time collaboration
  */
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
@@ -60,7 +60,7 @@ class OrchestrationEngine extends events_1.EventEmitter {
             ...config
         };
         this.projectPath = process.cwd();
-        this.taskLockManager = new task_lock_manager_1.TaskLockManager(path.join(this.projectPath, '.harmonycode'));
+        this.taskLockManager = new task_lock_manager_1.TaskLockManager(path.join(this.projectPath, '.claude-collab'));
     }
     /**
      * Initialize orchestration engine
@@ -288,14 +288,14 @@ class OrchestrationEngine extends events_1.EventEmitter {
             memory: this.config.enableMemory ? Array.from(this.memory.entries()) : [],
             workflowState: Array.from(this.workflowState.entries())
         };
-        const statePath = path.join(this.projectPath, '.harmonycode', 'orchestration-state.json');
+        const statePath = path.join(this.projectPath, '.claude-collab', 'orchestration-state.json');
         await fs.promises.writeFile(statePath, JSON.stringify(state, null, 2));
     }
     /**
      * Load orchestration state
      */
     async loadState() {
-        const statePath = path.join(this.projectPath, '.harmonycode', 'orchestration-state.json');
+        const statePath = path.join(this.projectPath, '.claude-collab', 'orchestration-state.json');
         try {
             if (fs.existsSync(statePath)) {
                 const data = await fs.promises.readFile(statePath, 'utf-8');
@@ -315,7 +315,7 @@ class OrchestrationEngine extends events_1.EventEmitter {
      * Initialize memory system
      */
     async initializeMemory() {
-        const memoryPath = path.join(this.projectPath, '.harmonycode', 'memory');
+        const memoryPath = path.join(this.projectPath, '.claude-collab', 'memory');
         if (!fs.existsSync(memoryPath)) {
             fs.mkdirSync(memoryPath, { recursive: true });
         }
@@ -553,7 +553,7 @@ class OrchestrationEngine extends events_1.EventEmitter {
     async storeMemory(key, value) {
         this.memory.set(key, value);
         // Persist to disk
-        const memoryPath = path.join(this.projectPath, '.harmonycode', 'memory', `${key}.json`);
+        const memoryPath = path.join(this.projectPath, '.claude-collab', 'memory', `${key}.json`);
         await fs.promises.writeFile(memoryPath, JSON.stringify(value, null, 2));
         this.emit('memoryStored', { key, value });
     }

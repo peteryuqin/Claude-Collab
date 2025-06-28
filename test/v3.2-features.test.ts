@@ -1,16 +1,16 @@
 /**
- * HarmonyCode v3.2.0 - New Features Tests
+ * Claude-Collab v3.2.0 - New Features Tests
  * Tests for v3.2 enhancements: unique names, session cleanup, version checking
  */
 
 import { IdentityManager } from '../core/identity-manager';
-import { HarmonyCodeServer } from '../core/server';
+import { ClaudeCollabServer } from '../core/server';
 import * as fs from 'fs';
 import * as path from 'path';
 
 describe('v3.2 Features', () => {
   let identityManager: IdentityManager;
-  const testWorkspace = '.test-harmonycode-v32';
+  const testWorkspace = '.test-claude-collab-v32';
   
   beforeEach(() => {
     // Create test workspace
@@ -154,10 +154,10 @@ describe('v3.2 Features', () => {
   });
 
   describe('Version Compatibility (Server)', () => {
-    let server: HarmonyCodeServer;
+    let server: ClaudeCollabServer;
     
     beforeEach(() => {
-      server = new HarmonyCodeServer({ 
+      server = new ClaudeCollabServer({ 
         port: 8766, // Different port for testing
         enableAntiEcho: false 
       });
@@ -191,7 +191,7 @@ describe('v3.2 Features', () => {
       const checkVersionCompatibility = (server as any).checkVersionCompatibility.bind(server);
       
       const warning = checkVersionCompatibility('3.1.0');
-      expect(warning.upgradeAction).toContain('npm install -g harmonycode@3.2.0');
+      expect(warning.upgradeAction).toContain('npm install -g claude-collab@3.2.0');
     });
   });
 

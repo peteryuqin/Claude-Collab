@@ -1,5 +1,5 @@
 /**
- * HarmonyCode v3.0.0 - Session Manager
+ * Claude-Collab v3.0.0 - Session Manager
  * Manages WebSocket sessions and agent connections
  */
 

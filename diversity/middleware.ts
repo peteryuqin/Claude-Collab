@@ -1,5 +1,5 @@
 /**
- * HarmonyCode v3.0.0 - Diversity Middleware
+ * Claude-Collab v3.0.0 - Diversity Middleware
  * Integrates Anti-Echo-Chamber system into real-time collaboration
  */
 

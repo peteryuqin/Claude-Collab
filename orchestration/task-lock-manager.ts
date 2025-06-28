@@ -1,5 +1,5 @@
 /**
- * HarmonyCode v3.1.0 - Task Lock Manager
+ * Claude-Collab v3.1.0 - Task Lock Manager
  * Implements atomic locking to prevent task race conditions
  */
 
@@ -29,7 +29,7 @@ export class TaskLockManager extends EventEmitter {
   private persistPath: string;
   private cleanupInterval: NodeJS.Timeout;
 
-  constructor(workspacePath: string = '.harmonycode') {
+  constructor(workspacePath: string = '.claude-collab') {
     super();
     this.persistPath = path.join(workspacePath, 'task-locks.json');
     this.loadLocks();

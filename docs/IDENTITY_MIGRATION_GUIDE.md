@@ -1,19 +1,19 @@
-# HarmonyCode v3.1.0 Identity Migration Guide
+# Claude-Collab v3.1.0 Identity Migration Guide
 
 ## Overview
 
-HarmonyCode v3.1.0 introduces a **persistent identity system** that solves the critical "identity crisis" issue discovered during real-world usage. This guide explains the changes and how to migrate from v3.0.0.
+Claude-Collab v3.1.0 introduces a **persistent identity system** that solves the critical "identity crisis" issue discovered during real-world usage. This guide explains the changes and how to migrate from v3.0.0.
 
 ## The Problem We Solved
 
 ### Before (v3.0.0) - Identity Crisis
 ```bash
 # Session 1
-harmonycode join alice --role coder
+claude-collab join alice --role coder
 # Alice is now "alice" the coder
 
 # Session 2 (reconnecting)
-harmonycode join alice --role reviewer  
+claude-collab join alice --role reviewer  
 # System thinks this is a DIFFERENT person!
 # Previous history is lost
 ```
@@ -23,12 +23,12 @@ harmonycode join alice --role reviewer
 ### After (v3.1.0) - Persistent Identity
 ```bash
 # First time
-harmonycode register alice
-harmonycode join alice --role coder
+claude-collab register alice
+claude-collab join alice --role coder
 # Alice is agent-3f4a2b with role "coder"
 
 # Reconnecting
-harmonycode join alice --role reviewer
+claude-collab join alice --role reviewer
 # Still Alice (agent-3f4a2b), just with a new role!
 # All history preserved
 ```
@@ -44,13 +44,13 @@ harmonycode join alice --role reviewer
 ### 2. New Commands
 ```bash
 # Register a new agent
-harmonycode register <name>
+claude-collab register <name>
 
 # Show saved identities  
-harmonycode whoami
+claude-collab whoami
 
 # Join with automatic authentication
-harmonycode join <name>
+claude-collab join <name>
 
 # In-session commands
 whoami              # Show your identity info
@@ -69,9 +69,9 @@ history            # View your contribution history
 ### For New Projects
 No migration needed! Just use the new commands:
 ```bash
-harmonycode init my-project
-harmonycode register my-agent
-harmonycode join my-agent
+claude-collab init my-project
+claude-collab register my-agent
+claude-collab join my-agent
 ```
 
 ### For Existing Projects
@@ -79,19 +79,19 @@ harmonycode join my-agent
 #### Option 1: Fresh Start (Recommended)
 ```bash
 # Register agents with their familiar names
-harmonycode register alice
-harmonycode register bob
-harmonycode register charlie
+claude-collab register alice
+claude-collab register bob
+claude-collab register charlie
 
 # Join with the same names - now with persistent identity!
-harmonycode join alice --role coder
+claude-collab join alice --role coder
 ```
 
 #### Option 2: Continue with Temporary Sessions
 The old `join` command still works but without persistence:
 ```bash
 # This creates a temporary session (not recommended)
-harmonycode join temp-session --new-agent
+claude-collab join temp-session --new-agent
 ```
 
 ## Usage Examples
@@ -99,16 +99,16 @@ harmonycode join temp-session --new-agent
 ### Basic Workflow
 ```bash
 # One-time registration
-harmonycode register alice
+claude-collab register alice
 
 # First session
-harmonycode join alice --role researcher
+claude-collab join alice --role researcher
 > say "Starting research on the authentication system"
 > switch-role architect  
 > say "Now designing the system architecture"
 
 # Later session (maybe hours/days later)
-harmonycode join alice  
+claude-collab join alice  
 > whoami
 # Shows: alice (agent-3f4a2b)
 # Total sessions: 2
@@ -119,21 +119,21 @@ harmonycode join alice
 ### Team Collaboration
 ```bash
 # Each team member registers once
-harmonycode register frontend-expert
-harmonycode register backend-expert  
-harmonycode register security-expert
+claude-collab register frontend-expert
+claude-collab register backend-expert  
+claude-collab register security-expert
 
 # They can rejoin anytime, maintaining their identity
-harmonycode join frontend-expert
-harmonycode join backend-expert --role reviewer
-harmonycode join security-expert --perspective skeptic
+claude-collab join frontend-expert
+claude-collab join backend-expert --role reviewer
+claude-collab join security-expert --perspective skeptic
 ```
 
 ## Technical Details
 
 ### Identity Storage
-- Identities stored in `.harmonycode/identities.json`
-- Auth tokens saved in `.harmonycode/agent-auth.json`
+- Identities stored in `.claude-collab/identities.json`
+- Auth tokens saved in `.claude-collab/agent-auth.json`
 - Both files are local to your project
 
 ### Security
@@ -157,17 +157,17 @@ harmonycode join security-expert --perspective skeptic
 ## Common Questions
 
 ### Q: What if I lose my auth token?
-A: Tokens are automatically saved in `.harmonycode/agent-auth.json`. If lost, you'll need to register a new identity.
+A: Tokens are automatically saved in `.claude-collab/agent-auth.json`. If lost, you'll need to register a new identity.
 
 ### Q: Can I have multiple identities?
 A: Yes! Register as many agent identities as you need:
 ```bash
-harmonycode register alice-researcher
-harmonycode register alice-coder
+claude-collab register alice-researcher
+claude-collab register alice-coder
 ```
 
 ### Q: How do I delete an identity?
-A: Remove the entry from `.harmonycode/agent-auth.json` and `.harmonycode/identities.json`.
+A: Remove the entry from `.claude-collab/agent-auth.json` and `.claude-collab/identities.json`.
 
 ### Q: Does this work with anti-echo-chamber features?
 A: Yes! Identity is separate from perspective enforcement. You maintain your identity while perspectives rotate.
@@ -175,7 +175,7 @@ A: Yes! Identity is separate from perspective enforcement. You maintain your ide
 ## Troubleshooting
 
 ### "Authentication failed"
-- Check if `.harmonycode/agent-auth.json` exists
+- Check if `.claude-collab/agent-auth.json` exists
 - Verify the agent name matches exactly
 - Try registering the agent again
 
@@ -185,8 +185,8 @@ A: Yes! Identity is separate from perspective enforcement. You maintain your ide
 - Or register a new identity
 
 ### Lost Identity History
-- Check `.harmonycode/identities.json` for the full history
-- Use `harmonycode whoami` to see saved identities
+- Check `.claude-collab/identities.json` for the full history
+- Use `claude-collab whoami` to see saved identities
 
 ## Summary
 

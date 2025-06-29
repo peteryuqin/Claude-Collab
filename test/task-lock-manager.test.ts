@@ -1,5 +1,5 @@
 /**
- * HarmonyCode v3.1.0 - Task Lock Manager Tests
+ * Claude-Collab v3.1.0 - Task Lock Manager Tests
  * Tests for atomic task locking to prevent race conditions
  */
 
@@ -9,7 +9,7 @@ import * as path from 'path';
 
 describe('TaskLockManager', () => {
   let lockManager: TaskLockManager;
-  const testWorkspace = '.test-harmonycode';
+  const testWorkspace = '.test-claude-collab';
   
   beforeEach(() => {
     // Create test workspace

@@ -1,5 +1,5 @@
 /**
- * HarmonyCode v3.1.0 - Identity Manager Tests
+ * Claude-Collab v3.1.0 - Identity Manager Tests
  * Tests for persistent identity system
  */
 
@@ -9,7 +9,7 @@ import * as path from 'path';
 
 describe('IdentityManager', () => {
   let identityManager: IdentityManager;
-  const testWorkspace = '.test-harmonycode';
+  const testWorkspace = '.test-claude-collab';
   
   beforeEach(() => {
     // Create test workspace with proper permissions

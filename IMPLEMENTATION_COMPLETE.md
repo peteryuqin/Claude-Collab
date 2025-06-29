@@ -1,8 +1,8 @@
-# HarmonyCode v3.1.0 Implementation Complete! 🎉
+# Claude-Collab v3.1.0 Implementation Complete! 🎉
 
 ## Summary
 
-I've successfully implemented comprehensive improvements to HarmonyCode based on user feedback. The feature branch `feature/identity-system-v3.1` has been created and pushed to GitHub.
+I've successfully implemented comprehensive improvements to Claude-Collab based on user feedback. The feature branch `feature/identity-system-v3.1` has been created and pushed to GitHub.
 
 ## What Was Accomplished
 
@@ -62,8 +62,8 @@ I've successfully implemented comprehensive improvements to HarmonyCode based on
 **After**: Atomic locking ensures exclusive task claims
 
 ### CLI Experience - IMPROVED! ✅
-**Before**: `harmonycode join "Frontend-Dev"`
-**After**: `hc j alice` (with persistent identity!)
+**Before**: `claude-collab join "Frontend-Dev"`
+**After**: `cc j alice` (with persistent identity!)
 
 ## GitHub Integration
 
@@ -81,7 +81,7 @@ I've successfully implemented comprehensive improvements to HarmonyCode based on
 - CHANGELOG.md
 - IMPROVEMENTS_SUMMARY.md
 - PULL_REQUEST_TEMPLATE.md
-- bin/hc
+- bin/cc
 - cli/aliases.json
 
 ### Modified Files (5)
@@ -95,12 +95,12 @@ I've successfully implemented comprehensive improvements to HarmonyCode based on
 
 ```bash
 # First time
-$ hc register alice
+$ cc register alice
 ✓ Agent registered: alice
   Agent ID: agent-3f4a2b
 
 # Join session
-$ hc join alice --role researcher
+$ cc join alice --role researcher
 ✓ Connected as alice
   Welcome back! Sessions: 2
 

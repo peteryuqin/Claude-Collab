@@ -1,9 +1,9 @@
-# HarmonyCode v3.2.0 - Ghost Busters Edition! 👻✨
+# Claude-Collab v3.2.0 - Ghost Busters Edition! 👻✨
 
 ## The AI Collaboration Framework That Prevents Echo Chambers - Now with Ghost Session Cleanup & Smart Identity!
 
-HarmonyCode v3.2.0 is the unified platform that combines:
-- 🎵 **Real-time collaboration** (from HarmonyCode v1)
+Claude-Collab v3.2.0 is the unified platform that combines:
+- 🎵 **Real-time collaboration** (from Claude-Collab v1)
 - 🎼 **Advanced orchestration** (from Claude-Flow)
 - 🛡️ **Anti-echo-chamber protection** (preventing AI groupthink)
 - 🆔 **Persistent identity system** (from v3.1.0)
@@ -44,45 +44,75 @@ HarmonyCode v3.2.0 is the unified platform that combines:
 
 Previous versions proved that AI agents can collaborate, but they also revealed a critical flaw: **artificial consensus**. When AIs work together, they tend to agree too quickly, creating echo chambers that lead to poor decisions.
 
-HarmonyCode v3.0.0 solves this by enforcing intellectual diversity at every level.
+Claude-Collab v3.0.0 solves this by enforcing intellectual diversity at every level.
+
+## 🎉 New in v3.3.0
+
+### 🐝 Multi-Agent Swarms
+```bash
+# Spawn multiple agents to tackle objectives
+cc swarm "Build a REST API" --strategy development --max-agents 5
+
+# Stop all swarm agents
+cc swarm-stop
+```
+
+### 💾 Persistent Memory
+```bash
+# Store and retrieve data across sessions
+cc memory store api_design "RESTful with JWT auth"
+cc memory get api_design
+cc memory list
+cc memory export backup.json
+```
+
+### 📊 Real-Time Monitoring
+```bash
+# Terminal dashboard with live updates
+cc watch
+
+# Web dashboard (separate terminal)
+cd ui && npm start
+# Open http://localhost:3001
+```
 
 ## 🚀 Quick Start
 
 ### Installation
 
 ```bash
-npm install -g harmonycode@3.2.0
+npm install -g claude-collab@3.3.0
 ```
 
 ### Create Your First Project
 
 ```bash
 # Initialize project with anti-echo-chamber enabled
-hc init my-ai-team
+cc init my-ai-team
 
 # Start the collaboration server
 cd my-ai-team
-hc server
+cc server
 
 # In another terminal, register and join as an agent
-hc register alice
+cc register alice
 # ✅ Agent registered: alice
 # Agent ID: agent-4f2b9c8a1d5e3f7b
-# 💡 Use this command to join: hc join alice
+# 💡 Use this command to join: cc join alice
 
-hc join alice --role researcher
+cc join alice --role researcher
 # ✅ Version compatible: v3.2.0
 # 🏆 Welcome! This is your first session.
 # Available commands: say, whoami, switch-role, exit
 
 # Check your identity card
-hc whoami
+cc whoami
 # 🏆 Newcomer (Level 1)
 # 📈 1 contributions, diversity score: 0.5
 # 💡 Try adopting different perspectives to increase diversity
 
 # Start a swarm with diversity enforcement
-hc swarm "Design a user authentication system" --anti-echo
+cc swarm "Design a user authentication system" --anti-echo
 ```
 
 ## 🎯 Key Features
@@ -91,25 +121,25 @@ hc swarm "Design a user authentication system" --anti-echo
 
 ```bash
 # Multiple agents collaborate with enforced perspectives
-harmonycode join agent1 --role coder --perspective optimist
-harmonycode join agent2 --role reviewer --perspective skeptic
-harmonycode join agent3 --role architect --perspective pragmatist
+claude-collab join agent1 --role coder --perspective optimist
+claude-collab join agent2 --role reviewer --perspective skeptic
+claude-collab join agent3 --role architect --perspective pragmatist
 ```
 
 ### 2. SPARC Development Modes
 
 ```bash
 # Run specialized AI modes with built-in diversity
-harmonycode sparc tdd "Build user service"
-harmonycode sparc researcher "Analyze security options" --require-evidence
-harmonycode sparc architect "Design microservices" --min-perspectives 3
+claude-collab sparc tdd "Build user service"
+claude-collab sparc researcher "Analyze security options" --require-evidence
+claude-collab sparc architect "Design microservices" --min-perspectives 3
 ```
 
 ### 3. Swarm Orchestration
 
 ```bash
 # Launch AI swarms that avoid groupthink
-harmonycode swarm "Build e-commerce platform" \
+claude-collab swarm "Build e-commerce platform" \
   --strategy distributed \
   --max-agents 10 \
   --disagreement-quota 0.3 \
@@ -133,7 +163,7 @@ AI-3: "Yes, MongoDB for sure"
 Result: Quick consensus, potential blind spots
 ```
 
-### HarmonyCode v3.0.0 (Enforced Diversity)
+### Claude-Collab v3.0.0 (Enforced Diversity)
 ```
 AI-1: "Let's use MongoDB"
 AI-2: ❌ Blocked: "Must provide different perspective"
@@ -146,7 +176,7 @@ Result: Evidence-based decision with 78% confidence
 ## 🛠️ Architecture
 
 ```
-harmonycode-v3/
+claude-collab-v3/
 ├── core/              # Real-time WebSocket collaboration
 ├── orchestration/     # SPARC modes and task management
 ├── diversity/         # Anti-echo-chamber enforcement
@@ -156,7 +186,7 @@ harmonycode-v3/
 
 ### Core Components
 
-1. **WebSocket Layer** (from HarmonyCode v1)
+1. **WebSocket Layer** (from Claude-Collab v1)
    - Real-time message passing
    - Conflict resolution
    - File synchronization
@@ -175,25 +205,25 @@ harmonycode-v3/
 
 ### Project Management
 ```bash
-harmonycode init <project>      # Initialize new project
-harmonycode server              # Start collaboration server
-harmonycode monitor             # View real-time metrics
+claude-collab init <project>      # Initialize new project
+claude-collab server              # Start collaboration server
+claude-collab monitor             # View real-time metrics
 ```
 
 ### Identity & Agent Management (v3.2.0)
 ```bash
-harmonycode register <name>     # Register new agent identity
-harmonycode whoami              # Show rich identity card with achievements
-harmonycode join <name>         # Join as an agent with persistent identity
-harmonycode agent spawn <type>  # Spawn specialized agent
-harmonycode agent list          # List active agents
+claude-collab register <name>     # Register new agent identity
+claude-collab whoami              # Show rich identity card with achievements
+claude-collab join <name>         # Join as an agent with persistent identity
+claude-collab agent spawn <type>  # Spawn specialized agent
+claude-collab agent list          # List active agents
 
 # Example: Advanced identity management
-hc register developer1
+cc register developer1
 # ✅ Agent registered: developer1
 # 💡 Available alternatives if taken: developer2, developer_new, developer_agent
 
-hc whoami
+cc whoami
 # 🏆 Senior Contributor (Level 4) 
 # 🌈 Diversity Champion  📊 Evidence Expert  💬 Communicator
 # 📈 67 contributions, diversity score: 0.84, evidence rate: 0.91
@@ -202,22 +232,22 @@ hc whoami
 
 ### Task & Swarm Control
 ```bash
-harmonycode task create <desc>  # Create task
-harmonycode swarm <objective>   # Start swarm
-harmonycode sparc <mode> <task> # Run SPARC mode
+claude-collab task create <desc>  # Create task
+claude-collab swarm <objective>   # Start swarm
+claude-collab sparc <mode> <task> # Run SPARC mode
 ```
 
 ### Memory & State
 ```bash
-harmonycode memory store <key> <value>  # Store in shared memory
-harmonycode memory get <key>            # Retrieve from memory
+claude-collab memory store <key> <value>  # Store in shared memory
+claude-collab memory get <key>            # Retrieve from memory
 ```
 
 ## 📈 Monitoring & Metrics
 
 ```bash
 # View diversity metrics
-harmonycode monitor --diversity
+claude-collab monitor --diversity
 
 # Example output:
 Diversity Metrics:
@@ -250,22 +280,22 @@ Diversity Metrics:
 
 ### 1. Software Development Team
 ```bash
-harmonycode swarm "Build REST API" --sparc coder,tester,reviewer
+claude-collab swarm "Build REST API" --sparc coder,tester,reviewer
 ```
 
 ### 2. Research Project
 ```bash
-harmonycode sparc researcher "Analyze ML architectures" --require-evidence
+claude-collab sparc researcher "Analyze ML architectures" --require-evidence
 ```
 
 ### 3. Architecture Decision
 ```bash
-harmonycode swarm "Choose database" --min-diversity 0.8 --evidence-threshold 0.9
+claude-collab swarm "Choose database" --min-diversity 0.8 --evidence-threshold 0.9
 ```
 
 ## 🤝 Migration from Previous Versions
 
-### From HarmonyCode v1/v2
+### From Claude-Collab v1/v2
 ```bash
 # Your WebSocket features still work
 # Plus: Anti-echo-chamber protection
@@ -326,14 +356,21 @@ Before v3.2.0, users experienced several critical issues that have now been comp
 - [x] Version compatibility warnings
 - [x] Achievement and ranking system
 
-### 🔮 Coming Next (v3.3.0+)
-- [ ] Web dashboard with live diversity visualization
+### ✅ Completed in v3.3.0
+- [x] Multi-agent swarm system (`cc swarm <objective>`)
+- [x] Persistent memory with SQLite backend (`cc memory`)
+- [x] Terminal dashboard for monitoring (`cc watch`)
+- [x] Web dashboard with live diversity visualization
+- [x] Connection stability improvements
+
+### 🔮 Coming Next (v3.4.0+)
 - [ ] Advanced AI agent skill matching for task assignment
 - [ ] GitHub integration (PR reviews, issue tracking)
 - [ ] Performance scaling for 100+ concurrent agents
 - [ ] Machine learning from successful disagreement patterns
 - [ ] Integration with popular AI models (GPT-4, Claude, etc.)
 - [ ] Advanced evidence validation and fact-checking
+- [ ] Full SPARC mode implementations
 
 ## 📄 License
 
@@ -352,7 +389,7 @@ Special thanks to:
 
 ## 🎊 **v3.2.0 Achievement Unlocked!**
 
-> **Ghost Buster** 👻✨ - Successfully eliminated all ghost sessions from the HarmonyCode ecosystem!
+> **Ghost Buster** 👻✨ - Successfully eliminated all ghost sessions from the Claude-Collab ecosystem!
 
 ---
 

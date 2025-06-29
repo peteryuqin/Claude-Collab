@@ -1,8 +1,8 @@
-# Pull Request: Fix Identity Crisis - HarmonyCode v3.1.0
+# Pull Request: Fix Identity Crisis - Claude-Collab v3.1.0
 
 ## Overview
 
-This PR implements a **persistent identity system** to solve the critical "identity crisis" issue discovered during real-world usage of HarmonyCode v3.0.0. Based on comprehensive user feedback from building the HarmonyCode website, agents were losing their identity when changing roles, leading to confusion and meaningless metrics.
+This PR implements a **persistent identity system** to solve the critical "identity crisis" issue discovered during real-world usage of Claude-Collab v3.0.0. Based on comprehensive user feedback from building the Claude-Collab website, agents were losing their identity when changing roles, leading to confusion and meaningless metrics.
 
 ## Problem Statement
 
@@ -113,7 +113,7 @@ See `docs/IDENTITY_MIGRATION_GUIDE.md` for detailed migration instructions. Key 
 
 While this PR solves the identity crisis, other improvements from user feedback could be addressed in future PRs:
 - Task race condition fixes
-- Command aliases (hc for harmonycode)
+- Command aliases (cc for claude-collab)
 - Enhanced progress tracking
 - Comprehensive test suite
 

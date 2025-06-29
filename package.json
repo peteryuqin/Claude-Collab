@@ -1,11 +1,11 @@
 {
-  "name": "harmonycode",
-  "version": "3.2.0",
-  "description": "The AI collaboration framework that prevents echo chambers - Real-time collaboration with diversity enforcement",
+  "name": "claude-collab",
+  "version": "3.3.0",
+  "description": "Claude Collab - The AI collaboration framework that prevents echo chambers",
   "main": "dist/index.js",
   "bin": {
-    "harmonycode": "cli/index.js",
-    "hc": "bin/hc"
+    "claude-collab": "cli/index.js",
+    "cc": "bin/cc"
   },
   "scripts": {
     "build": "tsc",
@@ -17,7 +17,7 @@
     "lint": "eslint src/**/*.ts",
     "demo": "npm run build && node examples/quick-start.js",
     "dashboard": "cd ui && npm start",
-    "prepublishOnly": "npm run build && npm test"
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "ai",
@@ -27,19 +27,23 @@
     "orchestration",
     "anti-echo-chamber",
     "diversity",
-    "harmonycode",
-    "claude-flow",
+    "claude-collab",
+    "claude",
+    "collaboration",
     "sparc",
     "swarm",
     "websocket"
   ],
-  "author": "HarmonyCode Team (Session 1, Session 2, Session 3)",
+  "author": "Claude Collab Team",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/peteryuqin/harmonycode.git"
+    "url": "git+https://github.com/peteryuqin/claude-collab.git"
   },
   "dependencies": {
+    "better-sqlite3": "^12.2.0",
+    "blessed": "^0.1.81",
+    "blessed-contrib": "^4.11.0",
     "chalk": "^4.1.2",
     "commander": "^11.0.0",
     "inquirer": "^8.2.6",

@@ -1,5 +1,5 @@
 /**
- * HarmonyCode v3.0.0 - Orchestration Engine
+ * Claude-Collab v3.0.0 - Orchestration Engine
  * Integrates Claude-Flow orchestration capabilities with real-time collaboration
  */
 
@@ -85,7 +85,7 @@ export class OrchestrationEngine extends EventEmitter {
       ...config
     };
     this.projectPath = process.cwd();
-    this.taskLockManager = new TaskLockManager(path.join(this.projectPath, '.harmonycode'));
+    this.taskLockManager = new TaskLockManager(path.join(this.projectPath, '.claude-collab'));
   }
 
   /**
@@ -367,7 +367,7 @@ export class OrchestrationEngine extends EventEmitter {
       workflowState: Array.from(this.workflowState.entries())
     };
     
-    const statePath = path.join(this.projectPath, '.harmonycode', 'orchestration-state.json');
+    const statePath = path.join(this.projectPath, '.claude-collab', 'orchestration-state.json');
     await fs.promises.writeFile(statePath, JSON.stringify(state, null, 2));
   }
 
@@ -375,7 +375,7 @@ export class OrchestrationEngine extends EventEmitter {
    * Load orchestration state
    */
   private async loadState(): Promise<void> {
-    const statePath = path.join(this.projectPath, '.harmonycode', 'orchestration-state.json');
+    const statePath = path.join(this.projectPath, '.claude-collab', 'orchestration-state.json');
     
     try {
       if (fs.existsSync(statePath)) {
@@ -398,7 +398,7 @@ export class OrchestrationEngine extends EventEmitter {
    * Initialize memory system
    */
   private async initializeMemory(): Promise<void> {
-    const memoryPath = path.join(this.projectPath, '.harmonycode', 'memory');
+    const memoryPath = path.join(this.projectPath, '.claude-collab', 'memory');
     
     if (!fs.existsSync(memoryPath)) {
       fs.mkdirSync(memoryPath, { recursive: true });
@@ -677,7 +677,7 @@ export class OrchestrationEngine extends EventEmitter {
     this.memory.set(key, value);
     
     // Persist to disk
-    const memoryPath = path.join(this.projectPath, '.harmonycode', 'memory', `${key}.json`);
+    const memoryPath = path.join(this.projectPath, '.claude-collab', 'memory', `${key}.json`);
     await fs.promises.writeFile(memoryPath, JSON.stringify(value, null, 2));
     
     this.emit('memoryStored', { key, value });

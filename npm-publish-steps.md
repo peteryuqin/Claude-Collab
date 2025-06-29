@@ -1,10 +1,10 @@
-# npm Publishing Steps for HarmonyCode v3.1.0
+# npm Publishing Steps for Claude-Collab v3.1.0
 
 ## Prerequisites
 - [ ] PR merged to main branch
 - [ ] You're on main branch with latest changes
 - [ ] You're logged into npm (`npm login`)
-- [ ] You have publish permissions for 'harmonycode' package
+- [ ] You have publish permissions for 'claude-collab' package
 
 ## Steps to Publish
 
@@ -46,13 +46,13 @@
 
 1. Check npm:
    ```bash
-   npm view harmonycode@3.1.0
+   npm view claude-collab@3.1.0
    ```
 
 2. Test installation:
    ```bash
-   npm install -g harmonycode@3.1.0
-   hc --version  # Should show 3.1.0
+   npm install -g claude-collab@3.1.0
+   cc --version  # Should show 3.1.0
    ```
 
 ## Post-Publish Announcement

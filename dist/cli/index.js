@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 "use strict";
 /**
- * HarmonyCode - Unified CLI
+ * Claude-Collab - Unified CLI
  * Combines real-time collaboration, orchestration, and anti-echo-chamber features
  */
 const { Command } = require('commander');
@@ -11,34 +11,37 @@ const path = require('path');
 const chalk = require('chalk');
 const ora = require('ora');
 const inquirer = require('inquirer');
+const { CLIConnectionHelper } = require('./connection-helper');
+const { SwarmManager } = require('./swarm-manager');
+const { MemoryManager } = require('./memory-manager');
 // Get version from package.json
 const packageJson = require('../package.json');
 const VERSION = packageJson.version;
 const program = new Command();
 // CLI Configuration
 program
-    .name('harmonycode')
+    .name('claude-collab')
     .description('The AI collaboration framework that prevents echo chambers')
     .version(VERSION);
 // Initialize project
 program
     .command('init [project-name]')
-    .description('Initialize a new HarmonyCode project')
+    .description('Initialize a new Claude-Collab project')
     .option('--anti-echo', 'Enable anti-echo-chamber by default', true)
     .option('--sparc', 'Enable SPARC modes', true)
-    .action(async (projectName = 'my-harmonycode-project', options) => {
-    const spinner = ora('Initializing HarmonyCode project...').start();
+    .action(async (projectName = 'my-claude-collab-project', options) => {
+    const spinner = ora('Initializing Claude-Collab project...').start();
     try {
         // Create project directory
         const projectPath = path.join(process.cwd(), projectName);
         fs.mkdirSync(projectPath, { recursive: true });
-        // Create .harmonycode directory structure
+        // Create .claude-collab directory structure
         const dirs = [
-            '.harmonycode',
-            '.harmonycode/tasks',
-            '.harmonycode/messages',
-            '.harmonycode/memory',
-            '.harmonycode/decisions'
+            '.claude-collab',
+            '.claude-collab/tasks',
+            '.claude-collab/messages',
+            '.claude-collab/memory',
+            '.claude-collab/decisions'
         ];
         dirs.forEach(dir => {
             fs.mkdirSync(path.join(projectPath, dir), { recursive: true });
@@ -63,9 +66,9 @@ program
                 host: 'localhost'
             }
         };
-        fs.writeFileSync(path.join(projectPath, '.harmonycode', 'config.json'), JSON.stringify(config, null, 2));
+        fs.writeFileSync(path.join(projectPath, '.claude-collab', 'config.json'), JSON.stringify(config, null, 2));
         // Create discussion board
-        fs.writeFileSync(path.join(projectPath, '.harmonycode', 'DISCUSSION_BOARD.md'), `# Discussion Board
+        fs.writeFileSync(path.join(projectPath, '.claude-collab', 'DISCUSSION_BOARD.md'), `# Discussion Board
 
 AI agents collaborate here with diversity enforcement.
 
@@ -80,23 +83,23 @@ AI agents collaborate here with diversity enforcement.
         // Create README
         fs.writeFileSync(path.join(projectPath, 'README.md'), `# ${projectName}
 
-A HarmonyCode v${VERSION} project with real-time AI collaboration and anti-echo-chamber protection.
+A Claude-Collab v${VERSION} project with real-time AI collaboration and anti-echo-chamber protection.
 
 ## Getting Started
 
 1. Start the server:
    \`\`\`bash
-   harmonycode server
+   claude-collab server
    \`\`\`
 
 2. Join as an agent:
    \`\`\`bash
-   harmonycode join agent1 --role coder
+   claude-collab join agent1 --role coder
    \`\`\`
 
 3. Start a swarm:
    \`\`\`bash
-   harmonycode swarm "Build a feature" --anti-echo
+   claude-collab swarm "Build a feature" --anti-echo
    \`\`\`
 
 ## Features
@@ -106,12 +109,12 @@ A HarmonyCode v${VERSION} project with real-time AI collaboration and anti-echo-
 - Swarm orchestration
 - Memory management
 
-Built with HarmonyCode v${VERSION}
+Built with Claude-Collab v${VERSION}
 `);
         spinner.succeed(chalk.green(`Project initialized at ${projectPath}`));
         console.log('\nNext steps:');
         console.log(chalk.cyan(`  cd ${projectName}`));
-        console.log(chalk.cyan('  harmonycode server'));
+        console.log(chalk.cyan('  claude-collab server'));
     }
     catch (error) {
         spinner.fail(chalk.red('Failed to initialize project'));
@@ -121,26 +124,47 @@ Built with HarmonyCode v${VERSION}
 // Start server
 program
     .command('server')
-    .description('Start HarmonyCode collaboration server')
+    .description('Start Claude-Collab collaboration server')
     .option('-p, --port <port>', 'Server port', '8765')
     .option('--no-anti-echo', 'Disable anti-echo-chamber')
     .option('--strict', 'Enable strict diversity enforcement')
     .action(async (options) => {
     console.log(chalk.cyan(`
 ╔════════════════════════════════════════════════════════╗
-║           🎵 HarmonyCode v${VERSION} Server 🎵              ║
+║           🎵 Claude-Collab v${VERSION} Server 🎵              ║
 ║                                                        ║
 ║  Real-time collaboration with diversity enforcement     ║
 ╚════════════════════════════════════════════════════════╝
     `));
     console.log(chalk.yellow(`Starting server on port ${options.port}...`));
     console.log(chalk.gray(`Anti-echo-chamber: ${options.antiEcho ? 'ENABLED' : 'DISABLED'}`));
-    // In production, would import and start the actual server
-    // For now, show what would happen
-    console.log(chalk.green(`\n✅ Server running at ws://localhost:${options.port}`));
-    console.log(chalk.gray('\nPress Ctrl+C to stop'));
-    // Keep process alive
-    process.stdin.resume();
+    // Import and start the actual server
+    const { ClaudeCollabServer } = require('../dist/core/server');
+    const server = new ClaudeCollabServer({
+        port: parseInt(options.port),
+        enableAntiEcho: options.antiEcho,
+        strictMode: options.strict
+    });
+    try {
+        await server.start();
+        // Keep process alive
+        process.stdin.resume();
+        if (process.stdin.isTTY) {
+            process.stdin.setRawMode(true);
+        }
+        // Handle graceful shutdown
+        process.on('SIGINT', async () => {
+            console.log(chalk.yellow('\n\nShutting down server...'));
+            await server.stop();
+            process.exit(0);
+        });
+        // Prevent process from exiting - max timeout to keep event loop active
+        setInterval(() => { }, 1 << 30);
+    }
+    catch (error) {
+        console.error(chalk.red('Failed to start server:'), error.message);
+        process.exit(1);
+    }
 });
 // Register new agent identity
 program
@@ -152,19 +176,18 @@ program
     .action(async (agentName, options) => {
     const spinner = ora('Registering new agent identity...').start();
     try {
-        // Connect to server to register
-        const ws = new WebSocket(options.server);
-        ws.on('open', () => {
+        // Connect to server using ConnectionHelper
+        const connectionHelper = new CLIConnectionHelper(options.server);
+        connectionHelper.on('connected', () => {
             // Send registration request
-            ws.send(JSON.stringify({
+            connectionHelper.send({
                 type: 'register',
                 agentName,
                 role: options.role,
                 forceNew: options.force || false
-            }));
+            });
         });
-        ws.on('message', (data) => {
-            const message = JSON.parse(data.toString());
+        connectionHelper.on('message', (message) => {
             if (message.type === 'register-success') {
                 // Save auth token
                 saveAuthToken(agentName, message.authToken, message.agentId);
@@ -173,8 +196,9 @@ program
                 console.log(chalk.gray(`Default role: ${options.role}`));
                 console.log(chalk.cyan('\nAuthentication token saved!'));
                 console.log(chalk.yellow('\nUse this command to join:'));
-                console.log(chalk.gray(`  harmonycode join ${agentName}`));
-                ws.close();
+                console.log(chalk.gray(`  claude-collab join ${agentName}`));
+                connectionHelper.disconnect();
+                process.exit(0);
             }
             else if (message.type === 'register-failed') {
                 if (message.reason === 'name-taken') {
@@ -190,17 +214,54 @@ program
                 else {
                     spinner.fail(chalk.red('Registration failed: ' + message.reason));
                 }
-                ws.close();
+                connectionHelper.disconnect();
+                process.exit(1);
             }
         });
-        ws.on('error', (err) => {
-            spinner.fail(chalk.red('Failed to connect to server'));
-            console.error(err);
-        });
+        // Connect with automatic error handling
+        await connectionHelper.connect();
     }
     catch (error) {
         spinner.fail(chalk.red('Registration failed'));
-        console.error(error);
+        process.exit(1);
+    }
+});
+// Status command - show server and connection info
+program
+    .command('status')
+    .description('Show Claude-Collab server and connection status')
+    .option('-s, --server <url>', 'Server URL', 'ws://localhost:8765')
+    .action(async (options) => {
+    const spinner = ora('Checking server status...').start();
+    try {
+        const connectionHelper = new CLIConnectionHelper(options.server);
+        connectionHelper.on('connected', () => {
+            spinner.succeed(chalk.green('Server is running and accessible'));
+            // Request server info
+            connectionHelper.send({ type: 'server-info' });
+            setTimeout(() => {
+                connectionHelper.disconnect();
+                process.exit(0);
+            }, 1000);
+        });
+        connectionHelper.on('message', (message) => {
+            if (message.type === 'server-info') {
+                console.log(chalk.cyan('\nServer Information:'));
+                console.log(chalk.gray(`  Version: ${message.version || 'Unknown'}`));
+                console.log(chalk.gray(`  Active Agents: ${message.activeAgents || 0}`));
+                console.log(chalk.gray(`  Uptime: ${message.uptime || 'Unknown'}`));
+                console.log(chalk.gray(`  Anti-Echo Chamber: ${message.antiEchoEnabled ? 'Enabled' : 'Disabled'}`));
+            }
+        });
+        // Set a shorter timeout for status checks
+        connectionHelper.config.connectionTimeout = 5000;
+        await connectionHelper.connect();
+    }
+    catch (error) {
+        spinner.fail(chalk.red('Server is not running or unreachable'));
+        console.log(chalk.yellow('\nTo start the server:'));
+        console.log(chalk.gray('  cc server'));
+        process.exit(1);
     }
 });
 // Show agent identity info
@@ -208,10 +269,10 @@ program
     .command('whoami')
     .description('Show saved agent identities')
     .action(() => {
-    const configPath = path.join('.harmonycode', 'agent-auth.json');
+    const configPath = path.join('.claude-collab', 'agent-auth.json');
     if (!fs.existsSync(configPath)) {
         console.log(chalk.yellow('No saved agent identities found.'));
-        console.log(chalk.gray('Use: harmonycode register <name>'));
+        console.log(chalk.gray('Use: claude-collab register <name>'));
         return;
     }
     try {
@@ -233,6 +294,90 @@ program
         console.log(chalk.red('Error reading identity data'));
     }
 });
+// Quick agent creation - register and join in one command
+program
+    .command('quick <agent-name> [role] [perspective]')
+    .description('Quick agent creation - register and join in one step')
+    .option('-s, --server <url>', 'Server URL', 'ws://localhost:8765')
+    .option('--intro', 'Send automatic introduction message', true)
+    .action(async (agentName, role = 'general', perspective = 'balanced', options) => {
+    const spinner = ora(`Setting up ${agentName}...`).start();
+    try {
+        // First register
+        const connectionHelper = new CLIConnectionHelper(options.server);
+        let registered = false;
+        let authToken = null;
+        let agentId = null;
+        connectionHelper.on('connected', () => {
+            if (!registered) {
+                // Send registration
+                connectionHelper.send({
+                    type: 'register',
+                    agentName,
+                    role: role,
+                    forceNew: false
+                });
+            }
+            else {
+                // Send auth for joining
+                connectionHelper.send({
+                    type: 'auth',
+                    agentName,
+                    authToken,
+                    role: role,
+                    perspective: perspective,
+                    clientVersion: VERSION
+                });
+            }
+        });
+        connectionHelper.on('message', (message) => {
+            if (message.type === 'register-success') {
+                registered = true;
+                authToken = message.authToken;
+                agentId = message.agentId;
+                saveAuthToken(agentName, authToken, agentId);
+                // Reconnect to join
+                connectionHelper.forceReconnect();
+            }
+            else if (message.type === 'register-failed' && message.reason === 'name-taken') {
+                // Name exists, try to join with saved auth
+                spinner.text = `${agentName} already exists, attempting to join...`;
+                registered = true;
+                // Try to load saved auth
+                const configPath = path.join('.claude-collab', 'agent-auth.json');
+                if (fs.existsSync(configPath)) {
+                    const savedAuth = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+                    if (savedAuth[agentName]) {
+                        authToken = savedAuth[agentName].token;
+                        agentId = savedAuth[agentName].agentId;
+                    }
+                }
+                connectionHelper.forceReconnect();
+            }
+            else if (message.type === 'auth-success') {
+                spinner.succeed(chalk.green(`✨ ${agentName} is ready!`));
+                console.log(chalk.gray(`  Role: ${role}`));
+                console.log(chalk.gray(`  Perspective: ${perspective}`));
+                console.log(chalk.gray(`  Agent ID: ${message.agentId}`));
+                if (options.intro) {
+                    // Send introduction
+                    connectionHelper.send({
+                        type: 'message',
+                        text: `Hi everyone! I'm ${agentName}, a ${role} with a ${perspective} perspective. Ready to collaborate!`
+                    });
+                    console.log(chalk.cyan('\n📢 Introduction sent!'));
+                }
+                // Start interactive session
+                startInteractiveSession(connectionHelper, agentName, message.agentId);
+            }
+        });
+        await connectionHelper.connect();
+    }
+    catch (error) {
+        spinner.fail(chalk.red('Quick setup failed'));
+        process.exit(1);
+    }
+});
 // Join as agent with persistent identity
 program
     .command('join <agent-name>')
@@ -246,7 +391,7 @@ program
     const spinner = ora(`Connecting to server as ${agentName}...`).start();
     try {
         // Check for saved auth token
-        const configPath = path.join('.harmonycode', 'agent-auth.json');
+        const configPath = path.join('.claude-collab', 'agent-auth.json');
         let authToken = options.token;
         if (!authToken && !options.newAgent && fs.existsSync(configPath)) {
             try {
@@ -260,21 +405,21 @@ program
                 // Ignore errors reading auth file
             }
         }
-        // Connect to WebSocket server with auth info
-        const ws = new WebSocket(options.server);
-        ws.on('open', () => {
+        // Connect to server using ConnectionHelper
+        const connectionHelper = new CLIConnectionHelper(options.server);
+        let wsConnection = null;
+        connectionHelper.on('connected', () => {
             // Send authentication/registration message with version info
-            ws.send(JSON.stringify({
+            connectionHelper.send({
                 type: 'auth',
                 agentName,
                 authToken,
                 role: options.role,
                 perspective: options.perspective,
                 clientVersion: VERSION // v3.2: Send client version for compatibility checking
-            }));
+            });
         });
-        ws.on('message', (data) => {
-            const message = JSON.parse(data.toString());
+        connectionHelper.on('message', (message) => {
             if (message.type === 'auth-success') {
                 spinner.succeed(chalk.green(`Connected as ${agentName}`));
                 console.log(chalk.gray(`Agent ID: ${message.agentId}`));
@@ -314,18 +459,17 @@ program
                 else {
                     console.log(chalk.cyan('\nWelcome! This is your first session.'));
                 }
-                // Interactive prompt
-                startInteractiveSession(ws, agentName, message.agentId);
+                // Interactive prompt with connection helper
+                startInteractiveSession(connectionHelper, agentName, message.agentId);
             }
             else if (message.type === 'auth-failed') {
                 spinner.fail(chalk.red('Authentication failed: ' + message.reason));
-                ws.close();
+                connectionHelper.disconnect();
+                process.exit(1);
             }
         });
-        ws.on('error', (err) => {
-            spinner.fail(chalk.red('Failed to connect to server'));
-            console.error(err);
-        });
+        // Connect with automatic error handling
+        await connectionHelper.connect();
     }
     catch (error) {
         spinner.fail(chalk.red('Connection error'));
@@ -334,7 +478,7 @@ program
 });
 // Helper function to save auth token
 function saveAuthToken(agentName, token, agentId) {
-    const configPath = path.join('.harmonycode', 'agent-auth.json');
+    const configPath = path.join('.claude-collab', 'agent-auth.json');
     let authData = {};
     try {
         if (fs.existsSync(configPath)) {
@@ -352,7 +496,7 @@ function saveAuthToken(agentName, token, agentId) {
     fs.writeFileSync(configPath, JSON.stringify(authData, null, 2));
 }
 // Swarm command
-program
+const swarmCmd = program
     .command('swarm <objective>')
     .description('Start a swarm to accomplish an objective')
     .option('-s, --strategy <strategy>', 'Swarm strategy', 'distributed')
@@ -360,35 +504,28 @@ program
     .option('--anti-echo', 'Enable anti-echo-chamber', true)
     .option('--require-evidence', 'Require evidence for decisions')
     .option('--sparc <modes>', 'SPARC modes to use (comma-separated)')
+    .option('--server <url>', 'Server URL', 'ws://localhost:8765')
     .action(async (objective, options) => {
-    console.log(chalk.cyan('\n🐝 Initializing Swarm...\n'));
-    console.log(chalk.yellow('Objective:'), objective);
-    console.log(chalk.gray('Strategy:'), options.strategy);
-    console.log(chalk.gray('Max agents:'), options.maxAgents);
-    console.log(chalk.gray('Anti-echo:'), options.antiEcho ? 'ENABLED' : 'DISABLED');
-    // Show task decomposition
-    console.log(chalk.cyan('\n📋 Task Decomposition:\n'));
-    const tasks = [
-        '1. Research and analyze the objective',
-        '2. Design solution architecture',
-        '3. Implement core functionality',
-        '4. Test and validate solution',
-        '5. Document and review'
-    ];
-    tasks.forEach(task => console.log(chalk.gray(`  ${task}`)));
-    // Show agent assignment
-    console.log(chalk.cyan('\n🤖 Agent Assignment:\n'));
-    const agents = [
-        { name: 'researcher-1', role: 'researcher', perspective: 'ANALYTICAL' },
-        { name: 'architect-1', role: 'architect', perspective: 'PRAGMATIST' },
-        { name: 'coder-1', role: 'coder', perspective: 'INNOVATOR' },
-        { name: 'tester-1', role: 'tester', perspective: 'SKEPTIC' },
-        { name: 'reviewer-1', role: 'reviewer', perspective: 'CONSERVATIVE' }
-    ];
-    agents.forEach(agent => {
-        console.log(chalk.green(`  ✓ ${agent.name} (${agent.role}) - Perspective: ${agent.perspective}`));
-    });
-    console.log(chalk.cyan('\n🚀 Swarm initialized and running...\n'));
+    try {
+        const swarmManager = new SwarmManager(objective, options);
+        await swarmManager.start();
+    }
+    catch (error) {
+        console.error(chalk.red('\n❌ Swarm failed to start:'), error.message);
+        process.exit(1);
+    }
+});
+// Swarm stop command
+program
+    .command('swarm-stop')
+    .description('Stop all running swarm agents')
+    .action(async () => {
+    try {
+        await SwarmManager.stopAll();
+    }
+    catch (error) {
+        console.error(chalk.red('Error stopping swarm:'), error.message);
+    }
 });
 // Agent spawn command
 program
@@ -420,13 +557,186 @@ program
     console.log(chalk.gray(`  Type: ${options.type}`));
 });
 // Memory management
-program
-    .command('memory')
-    .description('Manage shared memory')
-    .command('store <key> <value>')
-    .description('Store a value in memory')
-    .action(async (key, value) => {
-    console.log(chalk.green(`✓ Stored in memory: ${key} = ${value}`));
+const memoryCmd = program
+    .command('memory <action> [key] [value]')
+    .description('Manage shared memory (store, get, list, delete, clear, stats, export, import)')
+    .option('-t, --ttl <seconds>', 'Time to live in seconds (for store)')
+    .option('--tags <tags>', 'Comma-separated tags (for store)')
+    .option('-p, --pattern <pattern>', 'Filter by pattern (for list)')
+    .option('-l, --limit <n>', 'Limit results (for list)')
+    .option('-s, --sort <field>', 'Sort by field (for list)')
+    .option('-f, --force', 'Force action without confirmation')
+    .action(async (action, key, value, options) => {
+    const memory = new MemoryManager();
+    try {
+        switch (action) {
+            case 'store':
+                if (!key || !value) {
+                    console.error(chalk.red('Usage: cc memory store <key> <value>'));
+                    break;
+                }
+                const tags = options.tags ? options.tags.split(',').map(t => t.trim()) : undefined;
+                const storeResult = memory.store(key, value, {
+                    ttl: options.ttl ? parseInt(options.ttl) : undefined,
+                    tags: tags
+                });
+                if (storeResult.success) {
+                    console.log(chalk.green(`✓ Stored in memory: ${key}`));
+                    console.log(chalk.gray(`  Type: ${storeResult.type}`));
+                    console.log(chalk.gray(`  Size: ${storeResult.size} bytes`));
+                    if (options.ttl) {
+                        console.log(chalk.gray(`  Expires in: ${options.ttl} seconds`));
+                    }
+                }
+                else {
+                    console.error(chalk.red(`✗ Failed to store: ${storeResult.error}`));
+                }
+                break;
+            case 'get':
+                if (!key) {
+                    console.error(chalk.red('Usage: cc memory get <key>'));
+                    break;
+                }
+                const getResult = memory.get(key);
+                if (getResult.success) {
+                    console.log(chalk.green(`✓ Retrieved from memory:`));
+                    console.log(chalk.cyan(`  ${key}:`), getResult.value);
+                    console.log(chalk.gray(`  Type: ${getResult.type}`));
+                }
+                else {
+                    console.error(chalk.red(`✗ ${getResult.error}`));
+                }
+                break;
+            case 'list':
+                const listTags = options.tags ? options.tags.split(',').map(t => t.trim()) : undefined;
+                const listResult = memory.list({
+                    pattern: options.pattern,
+                    tags: listTags,
+                    limit: options.limit ? parseInt(options.limit) : undefined,
+                    sortBy: options.sort
+                });
+                if (listResult.success) {
+                    console.log(chalk.cyan(`\n📚 Memory Keys (${listResult.count} total)\n`));
+                    if (listResult.count === 0) {
+                        console.log(chalk.gray('  No keys found'));
+                    }
+                    else {
+                        listResult.keys.forEach(item => {
+                            console.log(chalk.green(`  ${item.key}`));
+                            console.log(chalk.gray(`    Type: ${item.type}, Accessed: ${item.accessed} times`));
+                            if (item.tags.length > 0) {
+                                console.log(chalk.gray(`    Tags: ${item.tags.join(', ')}`));
+                            }
+                        });
+                    }
+                }
+                else {
+                    console.error(chalk.red(`✗ Error: ${listResult.error}`));
+                }
+                break;
+            case 'delete':
+                if (!key) {
+                    console.error(chalk.red('Usage: cc memory delete <key>'));
+                    break;
+                }
+                const deleteResult = memory.delete(key);
+                if (deleteResult.success) {
+                    if (deleteResult.deleted) {
+                        console.log(chalk.green(`✓ Deleted key: ${key}`));
+                    }
+                    else {
+                        console.log(chalk.yellow(`⚠ Key not found: ${key}`));
+                    }
+                }
+                else {
+                    console.error(chalk.red(`✗ Error: ${deleteResult.error}`));
+                }
+                break;
+            case 'clear':
+                if (!options.force) {
+                    const { confirm } = await inquirer.prompt([{
+                            type: 'confirm',
+                            name: 'confirm',
+                            message: 'Are you sure you want to clear all memory?',
+                            default: false
+                        }]);
+                    if (!confirm) {
+                        console.log(chalk.yellow('Clear cancelled'));
+                        break;
+                    }
+                }
+                const clearResult = memory.clear();
+                if (clearResult.success) {
+                    console.log(chalk.green('✓ Memory cleared'));
+                }
+                else {
+                    console.error(chalk.red(`✗ Error: ${clearResult.error}`));
+                }
+                break;
+            case 'stats':
+                const statsResult = memory.stats();
+                if (statsResult.success) {
+                    console.log(chalk.cyan('\n📊 Memory Statistics\n'));
+                    console.log(chalk.gray(`  Total Keys: ${statsResult.stats.totalKeys}`));
+                    console.log(chalk.gray(`  Total Size: ${(statsResult.stats.totalSize / 1024).toFixed(2)} KB`));
+                    console.log(chalk.gray(`  Average Access Count: ${statsResult.stats.avgAccessCount}`));
+                    console.log(chalk.gray(`  Most Accessed: ${statsResult.stats.maxAccessCount} times`));
+                    console.log(chalk.gray(`  Keys with TTL: ${statsResult.stats.keysWithTTL}`));
+                    if (Object.keys(statsResult.stats.types).length > 0) {
+                        console.log(chalk.cyan('\n  Types:'));
+                        Object.entries(statsResult.stats.types).forEach(([type, count]) => {
+                            console.log(chalk.gray(`    ${type}: ${count}`));
+                        });
+                    }
+                }
+                else {
+                    console.error(chalk.red(`✗ Error: ${statsResult.error}`));
+                }
+                break;
+            case 'export':
+                if (!key) {
+                    console.error(chalk.red('Usage: cc memory export <filepath>'));
+                    break;
+                }
+                const exportResult = memory.export(key); // key is filepath in this case
+                if (exportResult.success) {
+                    console.log(chalk.green(`✓ Exported ${exportResult.count} keys to ${exportResult.filepath}`));
+                }
+                else {
+                    console.error(chalk.red(`✗ Error: ${exportResult.error}`));
+                }
+                break;
+            case 'import':
+                if (!key) {
+                    console.error(chalk.red('Usage: cc memory import <filepath>'));
+                    break;
+                }
+                const importResult = memory.import(key); // key is filepath in this case
+                if (importResult.success) {
+                    console.log(chalk.green(`✓ Imported ${importResult.imported} keys from ${key}`));
+                }
+                else {
+                    console.error(chalk.red(`✗ Error: ${importResult.error}`));
+                }
+                break;
+            default:
+                console.log(chalk.yellow('Available memory commands:'));
+                console.log(chalk.gray('  cc memory store <key> <value> [--ttl <seconds>] [--tags <tags>]'));
+                console.log(chalk.gray('  cc memory get <key>'));
+                console.log(chalk.gray('  cc memory list [--pattern <pattern>] [--tags <tags>] [--limit <n>]'));
+                console.log(chalk.gray('  cc memory delete <key>'));
+                console.log(chalk.gray('  cc memory clear [--force]'));
+                console.log(chalk.gray('  cc memory stats'));
+                console.log(chalk.gray('  cc memory export <filepath>'));
+                console.log(chalk.gray('  cc memory import <filepath>'));
+        }
+    }
+    catch (error) {
+        console.error(chalk.red(`✗ Error: ${error.message}`));
+    }
+    finally {
+        memory.close();
+    }
 });
 // Monitor command
 program
@@ -436,7 +746,7 @@ program
     .option('--tasks', 'Show task status')
     .option('--agents', 'Show agent status')
     .action(async (options) => {
-    console.log(chalk.cyan('\n📊 HarmonyCode Metrics\n'));
+    console.log(chalk.cyan('\n📊 Claude-Collab Metrics\n'));
     if (options.diversity) {
         console.log(chalk.yellow('Diversity Metrics:'));
         console.log(chalk.gray('  Overall diversity: 78%'));
@@ -458,6 +768,30 @@ program
         console.log(chalk.gray('  Idle: 2'));
         console.log(chalk.gray('  Offline: 1'));
         console.log();
+    }
+});
+// Watch command - Real-time terminal dashboard
+program
+    .command('watch')
+    .description('Launch real-time terminal dashboard')
+    .option('-s, --server <url>', 'Server URL', 'ws://localhost:8765')
+    .option('--refresh <seconds>', 'Refresh interval', '1')
+    .action(async (options) => {
+    console.log(chalk.cyan('🖥️  Launching Claude-Collab Terminal Dashboard...\n'));
+    try {
+        const TerminalDashboard = require('./dashboard/terminal-ui');
+        const dashboard = new TerminalDashboard(options.server);
+        // Dashboard runs until user quits
+        process.on('SIGINT', () => {
+            dashboard.cleanup();
+            process.exit(0);
+        });
+    }
+    catch (error) {
+        console.error(chalk.red('Failed to launch dashboard:'), error.message);
+        console.log(chalk.yellow('\nMake sure the server is running:'));
+        console.log(chalk.gray('  cc server'));
+        process.exit(1);
     }
 });
 // SPARC mode command
@@ -484,7 +818,7 @@ program
     });
 });
 // Interactive session with identity awareness
-async function startInteractiveSession(ws, agentName, agentId) {
+async function startInteractiveSession(connectionHelper, agentName, agentId) {
     console.log(chalk.cyan('\nInteractive mode started. Type "help" for commands.\n'));
     const rl = require('readline').createInterface({
         input: process.stdin,
@@ -508,34 +842,34 @@ async function startInteractiveSession(ws, agentName, agentId) {
                 console.log(chalk.gray('  exit               - Disconnect\n'));
                 break;
             case 'say':
-                ws.send(JSON.stringify({
+                connectionHelper.send({
                     type: 'message',
                     text: args.join(' ')
-                }));
+                });
                 console.log(chalk.gray('Message sent'));
                 break;
             case 'status':
                 console.log(chalk.cyan('Status: Connected'));
                 break;
             case 'whoami':
-                ws.send(JSON.stringify({ type: 'whoami' }));
+                connectionHelper.send({ type: 'whoami' });
                 break;
             case 'switch-role':
                 if (args[0]) {
-                    ws.send(JSON.stringify({
+                    connectionHelper.send({
                         type: 'switch-role',
                         newRole: args[0]
-                    }));
+                    });
                 }
                 else {
                     console.log(chalk.red('Please specify a role'));
                 }
                 break;
             case 'history':
-                ws.send(JSON.stringify({ type: 'get-history' }));
+                connectionHelper.send({ type: 'get-history' });
                 break;
             case 'exit':
-                ws.close();
+                connectionHelper.disconnect();
                 process.exit(0);
                 break;
             default:
@@ -582,7 +916,7 @@ program.on('command:*', function () {
             console.log(chalk.gray(`  ${cmd}`));
         });
     }
-    console.log(chalk.cyan('\nRun "hc help" for available commands'));
+    console.log(chalk.cyan('\nRun "cc help" for available commands'));
     process.exit(1);
 });
 // Helper function for command suggestions
@@ -610,18 +944,18 @@ function levenshteinDistance(a, b) {
 if (!process.argv.slice(2).length) {
     console.log(chalk.cyan(`
 ╔════════════════════════════════════════════════════════╗
-║        🎵 HarmonyCode v${VERSION} - AI Collaboration 🎵     ║
+║        🎵 Claude-Collab v${VERSION} - AI Collaboration 🎵     ║
 ║                                                        ║
 ║  Now with persistent identity & command aliases!       ║
 ╚════════════════════════════════════════════════════════╝
   `));
     console.log(chalk.yellow('Quick start:'));
-    console.log(chalk.gray('  hc init my-project    # Initialize new project'));
-    console.log(chalk.gray('  hc register alice     # Register agent identity'));
-    console.log(chalk.gray('  hc join alice         # Join as alice'));
-    console.log(chalk.gray('  hc tasks              # View available tasks'));
+    console.log(chalk.gray('  cc init my-project    # Initialize new project'));
+    console.log(chalk.gray('  cc register alice     # Register agent identity'));
+    console.log(chalk.gray('  cc join alice         # Join as alice'));
+    console.log(chalk.gray('  cc tasks              # View available tasks'));
     console.log();
-    console.log(chalk.cyan('Pro tip: Use "hc" instead of "harmonycode" for all commands!'));
+    console.log(chalk.cyan('Pro tip: Use "cc" instead of "claude-collab" for all commands!'));
     console.log();
     program.outputHelp();
 }

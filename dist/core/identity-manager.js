@@ -1,6 +1,6 @@
 "use strict";
 /**
- * HarmonyCode v3.2.0 - Identity Manager
+ * Claude-Collab v3.2.0 - Identity Manager
  * Implements persistent agent identity separate from roles and sessions
  * Enhanced with unique name enforcement and session cleanup (v3.2)
  */
@@ -43,7 +43,7 @@ const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 const crypto = __importStar(require("crypto"));
 class IdentityManager {
-    constructor(workspacePath = '.harmonycode') {
+    constructor(workspacePath = '.claude-collab') {
         this.identities = new Map();
         this.tokenToAgent = new Map();
         this.sessionToAgent = new Map();

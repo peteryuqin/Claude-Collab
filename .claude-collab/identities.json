@@ -1,0 +1,93 @@
+{
+  "identities": [
+    {
+      "agentId": "agent-56f62c1f0f7006a7",
+      "displayName": "alice",
+      "firstSeen": "2025-06-28T04:05:47.996Z",
+      "lastSeen": "2025-06-28T04:05:48.084Z",
+      "currentRole": "architect",
+      "roleHistory": [
+        {
+          "role": "general",
+          "timestamp": "2025-06-28T04:05:47.996Z",
+          "sessionId": "initial"
+        },
+        {
+          "role": "general",
+          "timestamp": "2025-06-28T04:05:48.085Z",
+          "sessionId": "session-1751083548083-ks3azlqwt"
+        }
+      ],
+      "perspectiveHistory": [],
+      "stats": {
+        "totalSessions": 1,
+        "totalMessages": 0,
+        "totalTasks": 0,
+        "totalEdits": 0,
+        "diversityScore": 0.5,
+        "agreementRate": 0.5,
+        "evidenceRate": 0.5
+      },
+      "authToken": "e754b56ac02b4ad24b4a57142276e7980aeca5d62b85044d25d04bb0be16211a",
+      "currentPerspective": "visionary"
+    },
+    {
+      "agentId": "agent-e106cd206dd0cb99",
+      "displayName": "bob",
+      "firstSeen": "2025-06-28T04:07:48.819Z",
+      "lastSeen": "2025-06-28T04:07:48.913Z",
+      "currentRole": "coder",
+      "roleHistory": [
+        {
+          "role": "general",
+          "timestamp": "2025-06-28T04:07:48.819Z",
+          "sessionId": "initial"
+        },
+        {
+          "role": "general",
+          "timestamp": "2025-06-28T04:07:48.913Z",
+          "sessionId": "session-1751083668912-91vx96xna"
+        }
+      ],
+      "perspectiveHistory": [],
+      "stats": {
+        "totalSessions": 1,
+        "totalMessages": 0,
+        "totalTasks": 0,
+        "totalEdits": 0,
+        "diversityScore": 0.5,
+        "agreementRate": 0.5,
+        "evidenceRate": 0.5
+      },
+      "authToken": "35c5c79dbe44a33f3515610410258c445287dc5844fd498d0e0f9642942b5505",
+      "lastActivityTime": "2025-06-28T04:07:48.913Z",
+      "currentPerspective": "pragmatist"
+    },
+    {
+      "agentId": "agent-f96897940dedbe91",
+      "displayName": "test-agent",
+      "firstSeen": "2025-06-29T03:47:06.996Z",
+      "lastSeen": "2025-06-29T03:47:06.996Z",
+      "currentRole": "general",
+      "roleHistory": [
+        {
+          "role": "general",
+          "timestamp": "2025-06-29T03:47:06.996Z",
+          "sessionId": "initial"
+        }
+      ],
+      "perspectiveHistory": [],
+      "stats": {
+        "totalSessions": 0,
+        "totalMessages": 0,
+        "totalTasks": 0,
+        "totalEdits": 0,
+        "diversityScore": 0.5,
+        "agreementRate": 0.5,
+        "evidenceRate": 0.5
+      },
+      "authToken": "fc701b2584d2e5aae6d8f26ef24fe1c109a6c77d7915e8de5f9716538c40c81d"
+    }
+  ],
+  "version": "3.2.0"
+}

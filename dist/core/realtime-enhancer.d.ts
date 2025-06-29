@@ -1,5 +1,5 @@
 /**
- * HarmonyCode v3.2.0 - Real-time Enhancer
+ * Claude-Collab v3.2.0 - Real-time Enhancer
  * Adds file watching and instant updates to improve real-time experience
  * Enhanced with session notifications and message queue
  */

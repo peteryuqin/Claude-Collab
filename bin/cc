@@ -1,0 +1,9 @@
+#!/usr/bin/env node
+
+/**
+ * Claude-Collab v3.2.0 - Short alias 'cc' for claude-collab
+ * Improves CLI UX with shorter commands
+ */
+
+// Simply forward all arguments to the main CLI
+require('../cli/index.js');

@@ -1,0 +1,22 @@
+{
+  "alice": {
+    "token": "e754b56ac02b4ad24b4a57142276e7980aeca5d62b85044d25d04bb0be16211a",
+    "agentId": "agent-56f62c1f0f7006a7",
+    "lastUsed": "2025-06-28T04:05:47.997Z"
+  },
+  "bob": {
+    "token": "35c5c79dbe44a33f3515610410258c445287dc5844fd498d0e0f9642942b5505",
+    "agentId": "agent-e106cd206dd0cb99",
+    "lastUsed": "2025-06-28T04:07:48.820Z"
+  },
+  "alex": {
+    "token": "7a13ea501f528654d2fc92c704e15728a945749a959ceb54240d277ed688ebb7",
+    "agentId": "agent-dddbe17c6f0b366a",
+    "lastUsed": "2025-06-29T03:33:29.524Z"
+  },
+  "test-agent": {
+    "token": "fc701b2584d2e5aae6d8f26ef24fe1c109a6c77d7915e8de5f9716538c40c81d",
+    "agentId": "agent-f96897940dedbe91",
+    "lastUsed": "2025-06-29T03:47:06.999Z"
+  }
+}

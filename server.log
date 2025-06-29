@@ -1,0 +1,27 @@
+
+╔════════════════════════════════════════════════════════╗
+║           🎵 Claude-Collab v3.2.0 Server 🎵            ║
+║                                                        ║
+║  Real-time collaboration with persistent identity      ║
+║  Anti-echo-chamber: ENABLED ✓                           ║
+╚════════════════════════════════════════════════════════╝
+    
+🚀 Server running on ws://localhost:8765
+📂 Project directory: /Users/peter/claude-collab-github
+
+🧠 Loaded 0 memory entries
+🎼 Orchestration engine initialized
+   SPARC modes: Enabled
+   Swarm mode: distributed
+   Max agents: 10
+👁️  Watching for changes in: /Users/peter/claude-collab-github/.claude-collab
+✅ New agent registered: test-agent (agent-f96897940dedbe91)
+📨 Processed 2 queued notifications
+⚠️  Low diversity score - consider perspective rotation
+⚠️  Low diversity score - consider perspective rotation
+⚠️  Low diversity score - consider perspective rotation
+⚠️  Low diversity score - consider perspective rotation
+⚠️  Low diversity score - consider perspective rotation
+⚠️  Low diversity score - consider perspective rotation
+⚠️  Low diversity score - consider perspective rotation
+⚠️  Low diversity score - consider perspective rotation

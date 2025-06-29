@@ -1,6 +1,6 @@
 "use strict";
 /**
- * HarmonyCode v3.1.0 - Enhanced Session Manager
+ * Claude-Collab v3.1.0 - Enhanced Session Manager
  * Integrates persistent identity management with sessions
  */
 Object.defineProperty(exports, "__esModule", { value: true });

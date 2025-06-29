@@ -147,6 +147,14 @@ export declare class ClaudeCollabServer extends EventEmitter {
      */
     private handleGetHistory;
     /**
+     * Handle dashboard subscription
+     */
+    private handleDashboardSubscription;
+    /**
+     * Send dashboard data to subscriber
+     */
+    private sendDashboardData;
+    /**
      * Generate unique session ID
      */
     private generateSessionId;

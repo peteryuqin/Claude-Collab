@@ -1,6 +1,6 @@
 {
   "name": "claude-collab",
-  "version": "3.2.3",
+  "version": "3.3.0",
   "description": "Claude Collab - The AI collaboration framework that prevents echo chambers",
   "main": "dist/index.js",
   "bin": {
@@ -41,6 +41,9 @@
     "url": "git+https://github.com/peteryuqin/claude-collab.git"
   },
   "dependencies": {
+    "better-sqlite3": "^12.2.0",
+    "blessed": "^0.1.81",
+    "blessed-contrib": "^4.11.0",
     "chalk": "^4.1.2",
     "commander": "^11.0.0",
     "inquirer": "^8.2.6",

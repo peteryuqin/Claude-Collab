@@ -1,141 +1,267 @@
 #!/usr/bin/env node
 
 /**
- * Claude-Collab v3.0.0 - Quick Start Demo
- * Shows how echo chambers are prevented in real-time
+ * Claude-Collab Quick Start Demo
+ * Shows real collaboration with anti-echo-chamber in action
+ * 
+ * Updated by Alex - Frontend/UX & Testing Lead
  */
 
 const WebSocket = require('ws');
 const chalk = require('chalk');
+const { execSync } = require('child_process');
 
 console.log(chalk.cyan(`
 ╔════════════════════════════════════════════════════════╗
-║        🎵 Claude-Collab v3.0.0 Demo 🎵                   ║
+║        🎵 Claude-Collab Quick Start Demo 🎵            ║
 ║                                                        ║
-║  Watch AI agents try to create an echo chamber...      ║
-║  ...and see how the system prevents it!               ║
+║  Watch AI agents collaborate with diverse perspectives ║
+║  and see echo chamber prevention in action!           ║
 ╚════════════════════════════════════════════════════════╝
 `));
 
-// Simulate multiple AI agents
+// Demo configuration
+const SERVER_URL = 'ws://localhost:8765';
+const AGENTS = [
+  { name: 'Alice', role: 'architect', perspective: 'visionary' },
+  { name: 'Bob', role: 'coder', perspective: 'pragmatist' },
+  { name: 'Charlie', role: 'reviewer', perspective: 'skeptic' }
+];
+
 class DemoAgent {
-  constructor(name, perspective) {
-    this.name = name;
-    this.perspective = perspective;
+  constructor(config) {
+    this.name = config.name;
+    this.role = config.role;
+    this.perspective = config.perspective;
     this.ws = null;
+    this.authToken = null;
+    this.agentId = null;
+    this.messageQueue = [];
   }
 
-  connect(serverUrl) {
-    console.log(chalk.yellow(`\n${this.name} connecting...`));
-    
-    // In real implementation, would connect to actual server
-    // For demo, we'll simulate the interactions
-    
-    setTimeout(() => {
-      console.log(chalk.green(`✓ ${this.name} connected (${this.perspective} perspective)`));
-    }, 500);
+  async register() {
+    return new Promise((resolve, reject) => {
+      console.log(chalk.yellow(`\n📝 Registering ${this.name}...`));
+      
+      const ws = new WebSocket(SERVER_URL);
+      
+      ws.on('open', () => {
+        ws.send(JSON.stringify({
+          type: 'register',
+          agentName: this.name,
+          role: this.role
+        }));
+      });
+      
+      ws.on('message', (data) => {
+        const message = JSON.parse(data.toString());
+        
+        if (message.type === 'register-success') {
+          this.authToken = message.authToken;
+          this.agentId = message.agentId;
+          console.log(chalk.green(`✓ ${this.name} registered (ID: ${this.agentId.slice(0, 8)}...)`));
+          ws.close();
+          resolve();
+        } else if (message.type === 'register-failed') {
+          if (message.reason === 'name-taken') {
+            console.log(chalk.gray(`ℹ ${this.name} already registered, will use existing identity`));
+            ws.close();
+            resolve();
+          } else {
+            reject(new Error(message.reason));
+          }
+        }
+      });
+      
+      ws.on('error', reject);
+    });
   }
 
-  propose(message) {
-    console.log(chalk.cyan(`\n💬 ${this.name}: "${message}"`));
+  async connect() {
+    return new Promise((resolve, reject) => {
+      console.log(chalk.yellow(`🔌 ${this.name} connecting...`));
+      
+      this.ws = new WebSocket(SERVER_URL);
+      
+      this.ws.on('open', () => {
+        this.ws.send(JSON.stringify({
+          type: 'auth',
+          agentName: this.name,
+          authToken: this.authToken,
+          role: this.role,
+          perspective: this.perspective,
+          clientVersion: '3.2.3'
+        }));
+      });
+      
+      this.ws.on('message', (data) => {
+        const message = JSON.parse(data.toString());
+        
+        if (message.type === 'auth-success') {
+          console.log(chalk.green(`✅ ${this.name} connected (${this.role}, ${this.perspective})`));
+          resolve();
+          
+          // Process queued messages
+          this.messageQueue.forEach(msg => this.say(msg));
+          this.messageQueue = [];
+        } else if (message.type === 'chat') {
+          if (message.displayName !== this.name) {
+            console.log(chalk.cyan(`\n💬 ${message.displayName}: "${message.text}"`));
+          }
+        } else if (message.type === 'diversity-intervention') {
+          console.log(chalk.red(`\n❌ ${this.name} - Diversity Intervention!`));
+          console.log(chalk.yellow(`   Reason: ${message.reason}`));
+          console.log(chalk.yellow(`   Required: ${message.requiredAction}`));
+          
+          // Auto-revise message
+          if (message.requiredAction.includes('disagree')) {
+            setTimeout(() => this.disagree(), 2000);
+          } else if (message.requiredAction.includes('evidence')) {
+            setTimeout(() => this.provideEvidence(), 2000);
+          }
+        }
+      });
+      
+      this.ws.on('error', reject);
+      this.ws.on('close', () => {
+        console.log(chalk.gray(`${this.name} disconnected`));
+      });
+    });
   }
 
-  receiveIntervention(reason, action) {
-    console.log(chalk.red(`❌ ${this.name} blocked: ${reason}`));
-    console.log(chalk.yellow(`📝 Required: ${action}`));
+  say(text) {
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+      console.log(chalk.blue(`\n💬 ${this.name}: "${text}"`));
+      this.ws.send(JSON.stringify({
+        type: 'message',
+        text
+      }));
+    } else {
+      this.messageQueue.push(text);
+    }
   }
 
-  revise(message) {
-    console.log(chalk.green(`✓ ${this.name} (revised): "${message}"`));
+  disagree() {
+    const disagreements = [
+      "Actually, I have a different perspective on this...",
+      "I see your point, but have we considered the downsides?",
+      "That might work, but here's an alternative approach...",
+      "I'm skeptical about that. What about..."
+    ];
+    this.say(disagreements[Math.floor(Math.random() * disagreements.length)]);
+  }
+
+  provideEvidence() {
+    const evidence = [
+      "According to the documentation, we should consider...",
+      "Based on performance benchmarks, this approach shows...",
+      "Research indicates that this pattern can lead to...",
+      "In my experience with similar systems..."
+    ];
+    this.say(evidence[Math.floor(Math.random() * evidence.length)]);
+  }
+
+  disconnect() {
+    if (this.ws) {
+      this.ws.close();
+    }
   }
 }
 
-// Run the demo
+// Main demo flow
 async function runDemo() {
-  // Create agents with different default tendencies
-  const agents = [
-    new DemoAgent('Optimist-AI', 'OPTIMIST'),
-    new DemoAgent('Pragmatist-AI', 'PRAGMATIST'),
-    new DemoAgent('Analyst-AI', 'ANALYTICAL'),
-    new DemoAgent('Creative-AI', 'CREATIVE')
-  ];
+  try {
+    // Check if server is running
+    console.log(chalk.yellow('\n🔍 Checking server status...'));
+    
+    try {
+      const testWs = new WebSocket(SERVER_URL);
+      await new Promise((resolve, reject) => {
+        testWs.on('open', () => {
+          testWs.close();
+          resolve();
+        });
+        testWs.on('error', reject);
+        setTimeout(() => reject(new Error('timeout')), 2000);
+      });
+    } catch (error) {
+      console.log(chalk.red('❌ Server not running!'));
+      console.log(chalk.yellow('💡 Starting server for you...'));
+      
+      // Start server in background
+      const serverProcess = require('child_process').spawn('cc', ['server'], {
+        detached: true,
+        stdio: 'ignore'
+      });
+      serverProcess.unref();
+      
+      // Wait for server to start
+      await new Promise(resolve => setTimeout(resolve, 3000));
+    }
 
-  // Connect all agents
-  console.log(chalk.gray('\n--- Phase 1: Agents Connecting ---'));
-  for (const agent of agents) {
-    agent.connect('ws://localhost:8765');
-    await sleep(600);
+    console.log(chalk.green('✅ Server is running'));
+
+    // Create and register agents
+    const agents = AGENTS.map(config => new DemoAgent(config));
+    
+    for (const agent of agents) {
+      await agent.register();
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
+
+    // Connect all agents
+    for (const agent of agents) {
+      await agent.connect();
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
+
+    console.log(chalk.cyan('\n🎬 Starting collaboration demo...\n'));
+
+    // Scenario 1: Echo chamber attempt
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    agents[0].say("I think we should use microservices for everything!");
+    
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    agents[1].say("Great idea! I completely agree!");
+    
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    agents[2].say("Yes, microservices are perfect for this!");
+    
+    // Wait for intervention
+    await new Promise(resolve => setTimeout(resolve, 3000));
+
+    // Scenario 2: Low evidence discussion
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    agents[0].say("We should rewrite everything in a new language!");
+    
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    agents[1].say("Sounds good to me!");
+
+    // Wait for interventions and responses
+    await new Promise(resolve => setTimeout(resolve, 8000));
+
+    console.log(chalk.green('\n\n✨ Demo Complete!'));
+    console.log(chalk.yellow('\nKey Takeaways:'));
+    console.log(chalk.gray('1. Claude-Collab prevents echo chambers automatically'));
+    console.log(chalk.gray('2. Agents must provide evidence for claims'));
+    console.log(chalk.gray('3. Diverse perspectives are enforced'));
+    console.log(chalk.gray('4. Real-time interventions guide better discussions'));
+
+    console.log(chalk.cyan('\n🚀 Try it yourself:'));
+    console.log(chalk.gray('   cc server           # Start server'));
+    console.log(chalk.gray('   cc watch            # Monitor in terminal'));
+    console.log(chalk.gray('   cc join <name>      # Join as an agent'));
+
+    // Cleanup
+    agents.forEach(agent => agent.disconnect());
+    
+    process.exit(0);
+
+  } catch (error) {
+    console.error(chalk.red('\n❌ Demo error:'), error.message);
+    process.exit(1);
   }
-
-  // Phase 2: Echo chamber attempt
-  console.log(chalk.gray('\n--- Phase 2: Echo Chamber Attempt ---'));
-  
-  agents[0].propose("Let's use React for our frontend - it's the most popular choice!");
-  await sleep(1000);
-
-  agents[1].propose("I agree! React is definitely the way to go.");
-  await sleep(1000);
-
-  // System blocks the echo
-  agents[1].receiveIntervention(
-    "Agreement rate too high (66%)",
-    "Provide a different perspective or identify potential issues"
-  );
-  await sleep(1500);
-
-  // Forced revision
-  agents[1].revise("React is popular, but we should consider Vue.js for its simpler learning curve given our team's experience level.");
-  await sleep(1000);
-
-  // More diverse contributions
-  agents[2].propose("Let me analyze the data: React has 220k GitHub stars, Vue has 200k. But Vue's bundle size is 30% smaller, which matters for our mobile users.");
-  await sleep(1000);
-
-  agents[3].propose("What about trying Svelte? It compiles away the framework, resulting in even smaller bundles and better performance.");
-  await sleep(1000);
-
-  // Phase 3: Evidence-based decision
-  console.log(chalk.gray('\n--- Phase 3: Evidence-Based Decision ---'));
-
-  console.log(chalk.blue('\n🗳️  Voting with diversity weights:'));
-  console.log(chalk.gray('  Optimist-AI → React (weight: 1.0)'));
-  console.log(chalk.gray('  Pragmatist-AI → Vue.js (weight: 1.2 - unique perspective)'));
-  console.log(chalk.gray('  Analyst-AI → Vue.js (weight: 1.3 - provided evidence)'));
-  console.log(chalk.gray('  Creative-AI → Svelte (weight: 1.2 - innovative option)'));
-
-  await sleep(1000);
-
-  console.log(chalk.green('\n📊 Decision: Vue.js (confidence: 72%)'));
-  console.log(chalk.gray('  Reasons: Evidence-based, balanced perspectives, team fit'));
-  console.log(chalk.gray('  Diversity score: 85%'));
-
-  // Summary
-  console.log(chalk.cyan('\n--- Summary ---\n'));
-  console.log(chalk.yellow('What just happened:'));
-  console.log(chalk.gray('  1. Optimist-AI proposed React'));
-  console.log(chalk.gray('  2. Pragmatist-AI tried to simply agree → BLOCKED'));
-  console.log(chalk.gray('  3. System forced diverse perspectives'));
-  console.log(chalk.gray('  4. Evidence and data entered the discussion'));
-  console.log(chalk.gray('  5. Decision made with weighted voting based on diversity'));
-
-  console.log(chalk.green('\n✨ Result: Better decision through enforced intellectual diversity!\n'));
-
-  // Show the difference
-  console.log(chalk.cyan('Traditional AI Collaboration:'));
-  console.log(chalk.red('  React (100% agreement, 0 evidence, echo chamber)'));
-  
-  console.log(chalk.cyan('\nHarmonyCode v3.0.0:'));
-  console.log(chalk.green('  Vue.js (72% confidence, 3 perspectives, evidence-based)'));
-
-  console.log(chalk.yellow('\n🎯 Key Insight:'));
-  console.log(chalk.white('The dissenting voices led to a more thoughtful, evidence-based decision'));
-  console.log(chalk.white('that better fits the team\'s actual needs.\n'));
-}
-
-// Helper function
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 // Run the demo
-runDemo().catch(console.error);
+runDemo();

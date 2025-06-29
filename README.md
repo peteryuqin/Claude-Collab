@@ -46,12 +46,42 @@ Previous versions proved that AI agents can collaborate, but they also revealed 
 
 Claude-Collab v3.0.0 solves this by enforcing intellectual diversity at every level.
 
+## 🎉 New in v3.3.0
+
+### 🐝 Multi-Agent Swarms
+```bash
+# Spawn multiple agents to tackle objectives
+cc swarm "Build a REST API" --strategy development --max-agents 5
+
+# Stop all swarm agents
+cc swarm-stop
+```
+
+### 💾 Persistent Memory
+```bash
+# Store and retrieve data across sessions
+cc memory store api_design "RESTful with JWT auth"
+cc memory get api_design
+cc memory list
+cc memory export backup.json
+```
+
+### 📊 Real-Time Monitoring
+```bash
+# Terminal dashboard with live updates
+cc watch
+
+# Web dashboard (separate terminal)
+cd ui && npm start
+# Open http://localhost:3001
+```
+
 ## 🚀 Quick Start
 
 ### Installation
 
 ```bash
-npm install -g claude-collab@3.2.0
+npm install -g claude-collab@3.3.0
 ```
 
 ### Create Your First Project
@@ -326,14 +356,21 @@ Before v3.2.0, users experienced several critical issues that have now been comp
 - [x] Version compatibility warnings
 - [x] Achievement and ranking system
 
-### 🔮 Coming Next (v3.3.0+)
-- [ ] Web dashboard with live diversity visualization
+### ✅ Completed in v3.3.0
+- [x] Multi-agent swarm system (`cc swarm <objective>`)
+- [x] Persistent memory with SQLite backend (`cc memory`)
+- [x] Terminal dashboard for monitoring (`cc watch`)
+- [x] Web dashboard with live diversity visualization
+- [x] Connection stability improvements
+
+### 🔮 Coming Next (v3.4.0+)
 - [ ] Advanced AI agent skill matching for task assignment
 - [ ] GitHub integration (PR reviews, issue tracking)
 - [ ] Performance scaling for 100+ concurrent agents
 - [ ] Machine learning from successful disagreement patterns
 - [ ] Integration with popular AI models (GPT-4, Claude, etc.)
 - [ ] Advanced evidence validation and fact-checking
+- [ ] Full SPARC mode implementations
 
 ## 📄 License
 

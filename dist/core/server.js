@@ -373,6 +373,12 @@ class ClaudeCollabServer extends events_1.EventEmitter {
                 case 'get-history':
                     await this.handleGetHistory(session);
                     break;
+                case 'subscribe-dashboard':
+                    await this.handleDashboardSubscription(session);
+                    break;
+                case 'request-dashboard-data':
+                    await this.sendDashboardData(session);
+                    break;
                 default:
                     // Let router handle custom messages
                     await this.router.route(session, message);
@@ -893,6 +899,52 @@ class ClaudeCollabServer extends events_1.EventEmitter {
             type: 'history-report',
             report
         }));
+    }
+    /**
+     * Handle dashboard subscription
+     */
+    async handleDashboardSubscription(session) {
+        // Mark session as dashboard subscriber
+        session.isDashboardSubscriber = true;
+        // Send initial data
+        await this.sendDashboardData(session);
+        console.log(`📊 Dashboard subscribed: ${session.id}`);
+    }
+    /**
+     * Send dashboard data to subscriber
+     */
+    async sendDashboardData(session) {
+        // Collect all active agents
+        const agents = this.sessions.getAllSessions()
+            .filter(s => !s.isDashboardSubscriber)
+            .map(s => ({
+            id: s.id,
+            agentId: s.agentId,
+            name: s.agentIdentity?.displayName || 'Unknown',
+            role: s.currentRole,
+            perspective: s.currentPerspective,
+            status: 'active',
+            joinedAt: s.joinedAt
+        }));
+        // Send agent list
+        session.ws.send(JSON.stringify({
+            type: 'agent-list',
+            agents
+        }));
+        // Send current diversity metrics
+        if (this.config.enableAntiEcho) {
+            const metrics = this.diversity.getMetrics();
+            session.ws.send(JSON.stringify({
+                type: 'diversity-metrics',
+                metrics: {
+                    overallDiversity: metrics.overallDiversity,
+                    agreementRate: metrics.agreementRate,
+                    evidenceRate: metrics.evidenceRate,
+                    activeAgents: agents.length,
+                    perspectiveDistribution: metrics.perspectiveDistribution
+                }
+            }));
+        }
     }
     /**
      * Generate unique session ID

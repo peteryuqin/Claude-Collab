@@ -17,6 +17,7 @@
     "sourceMap": true
   },
   "include": [
+    "src/**/*.ts",
     "core/**/*.ts",
     "diversity/**/*.ts",
     "orchestration/**/*.ts",
@@ -25,6 +26,9 @@
   ],
   "exclude": [
     "node_modules",
-    "dist"
+    "dist",
+    "ui",
+    "examples",
+    "test"
   ]
 }

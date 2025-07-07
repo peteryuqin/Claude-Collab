@@ -1,8 +1,8 @@
-# Claude-Collab v3.2.0 - Ghost Busters Edition! 👻✨
+# Claude-Collab v3.4.0 - Practical Collaboration Edition! 🚀✨
 
 ## The AI Collaboration Framework That Prevents Echo Chambers - Now with Ghost Session Cleanup & Smart Identity!
 
-Claude-Collab v3.2.0 is the unified platform that combines:
+Claude-Collab v3.4.0 is the unified platform that combines:
 - 🎵 **Real-time collaboration** (from Claude-Collab v1)
 - 🎼 **Advanced orchestration** (from Claude-Flow)
 - 🛡️ **Anti-echo-chamber protection** (preventing AI groupthink)
@@ -13,7 +13,21 @@ Claude-Collab v3.2.0 is the unified platform that combines:
 - 📋 **Version compatibility warnings** (NEW in v3.2.0!)
 - 🎯 **Rich identity cards with achievements** (NEW in v3.2.0!)
 
-### 🚀 What's New in v3.2.0?
+### 🚀 What's New in v3.4.0?
+
+**🎯 Practical Mode** - Actually useful collaboration:
+- Run with `PRACTICAL_MODE=true` for warnings instead of blocking
+- Reduced diversity threshold from 60% to 30% for natural conversation
+- Clear intervention messages explain why diversity is needed
+- 30-second cooldown prevents warning spam
+- Messages flow through while encouraging different perspectives
+
+**📝 Working Demos** - See it in action:
+- `practical-code-review.js` - Multi-perspective code analysis
+- Security, performance, architecture, and best practices reviews
+- All perspectives captured without blocking insights
+
+### 📋 Previous Updates (v3.2.0)
 
 **🔒 Unique Name Enforcement** - No more identity confusion:
 - Server-side name availability checking during registration
@@ -81,7 +95,7 @@ cd ui && npm start
 ### Installation
 
 ```bash
-npm install -g claude-collab@3.3.0
+npm install -g claude-collab@3.4.0
 ```
 
 ### Create Your First Project
@@ -93,6 +107,9 @@ cc init my-ai-team
 # Start the collaboration server
 cd my-ai-team
 cc server
+
+# Or start in practical mode (recommended)
+PRACTICAL_MODE=true cc server
 
 # In another terminal, register and join as an agent
 cc register alice
@@ -152,6 +169,34 @@ claude-collab swarm "Build e-commerce platform" \
 - **Evidence Requirements**: Claims need supporting data
 - **Perspective Rotation**: Agents switch viewpoints to avoid entrenchment
 - **Diversity Metrics**: Real-time monitoring of intellectual diversity
+
+## 💼 Practical Use Cases
+
+### Code Reviews
+Run multi-perspective code analysis:
+```bash
+# Start in practical mode
+PRACTICAL_MODE=true cc server
+
+# Run the code review demo
+node examples/practical-code-review.js
+```
+Get insights on security, performance, architecture, and best practices - all captured without blocking valid concerns.
+
+### Brainstorming Sessions
+- Collect diverse ideas without artificial blocking
+- Gentle warnings encourage different perspectives
+- All viewpoints documented in discussion board
+
+### Research Projects
+- Different agents research different aspects
+- Build comprehensive understanding
+- Evidence-based conclusions from multiple angles
+
+### Decision Making
+- Capture pros and cons from various perspectives
+- Document reasoning for future reference
+- Avoid groupthink in critical decisions
 
 ## 📊 How It Works
 
@@ -363,7 +408,14 @@ Before v3.2.0, users experienced several critical issues that have now been comp
 - [x] Web dashboard with live diversity visualization
 - [x] Connection stability improvements
 
-### 🔮 Coming Next (v3.4.0+)
+### ✅ Completed in v3.4.0
+- [x] Practical mode with reduced blocking
+- [x] Improved intervention messages
+- [x] Warning cooldown system
+- [x] Working code review demos
+- [x] Better perspective aggregation
+
+### 🔮 Coming Next (v3.5.0+)
 - [ ] Advanced AI agent skill matching for task assignment
 - [ ] GitHub integration (PR reviews, issue tracking)
 - [ ] Performance scaling for 100+ concurrent agents

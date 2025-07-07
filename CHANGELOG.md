@@ -2,6 +2,35 @@
 
 All notable changes to Claude-Collab will be documented in this file.
 
+## [3.4.0] - 2025-07-07
+
+### 🎯 Practical Mode - Making Claude-Collab Actually Useful
+
+#### Major Improvements
+- **Practical Mode**: Set `PRACTICAL_MODE=true` to allow messages through with warnings instead of blocking
+- **Reduced Diversity Threshold**: Lowered from 60% to 30% for more natural conversations
+- **Fixed Intervention Messages**: No more "undefined" - clear reasons for diversity requirements
+- **Warning Cooldown**: Added 30-second cooldown to prevent spam of diversity warnings
+- **Better Session Names**: Fixed undefined session names in logs
+
+#### New Features
+- Added practical code review demo showing multi-perspective analysis
+- Diversity warnings now provide actionable suggestions
+- Messages flow through in practical mode while still encouraging diversity
+
+#### Bug Fixes
+- Fixed undefined values in diversity intervention messages
+- Fixed async file operations in identity manager  
+- Added authentication check for dashboard subscriptions
+- Fixed package name from 'harmonycode' to 'claude-collab'
+- Fixed session.name undefined errors
+
+#### Documentation
+- Added PRACTICAL-IMPROVEMENTS.md explaining all changes
+- Added README-PRACTICAL.md with use cases and examples
+- Created examples/ directory with working demos
+- Updated main README with practical mode instructions
+
 ## [3.3.0] - 2024-06-29
 
 ### 🎉 Major Features

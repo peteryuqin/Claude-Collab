@@ -5,6 +5,7 @@
  */
 
 import * as fs from 'fs';
+import { promises as fsPromises } from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
 import { Session } from './session-manager';
@@ -79,7 +80,45 @@ export class IdentityManager {
 
   constructor(workspacePath: string = '.claude-collab') {
     this.persistPath = path.join(workspacePath, 'identities.json');
-    this.loadIdentities();
+    // Note: loadIdentities() is now async, call initialize() after construction
+    this.loadIdentitiesSync();
+  }
+  
+  /**
+   * Initialize with async operations
+   */
+  async initialize(): Promise<void> {
+    await this.loadIdentities();
+  }
+  
+  /**
+   * Synchronous fallback for constructor
+   */
+  private loadIdentitiesSync(): void {
+    try {
+      if (fs.existsSync(this.persistPath)) {
+        const data = fs.readFileSync(this.persistPath, 'utf-8');
+        this.parseIdentityData(data);
+      }
+    } catch (error) {
+      console.error('Failed to load identities (sync):', error);
+    }
+  }
+  
+  /**
+   * Synchronous save for backward compatibility
+   */
+  private saveIdentitiesSync(): void {
+    try {
+      const data = {
+        identities: Array.from(this.identities.values()),
+        version: '3.2.0'
+      };
+      
+      fs.writeFileSync(this.persistPath, JSON.stringify(data, null, 2));
+    } catch (error) {
+      console.error('Failed to save identities (sync):', error);
+    }
   }
 
   /**
@@ -124,7 +163,7 @@ export class IdentityManager {
     this.identities.set(agentId, identity);
     this.tokenToAgent.set(authToken, agentId);
     this.nameToAgent.set(displayName, agentId); // Track name -> agentId mapping
-    this.saveIdentities();
+    this.saveIdentitiesSync(); // Use sync version for backward compatibility
 
     return identity;
   }
@@ -489,49 +528,56 @@ export class IdentityManager {
   /**
    * Load identities from disk
    */
-  private loadIdentities(): void {
+  private async loadIdentities(): Promise<void> {
     try {
       if (fs.existsSync(this.persistPath)) {
-        const data = fs.readFileSync(this.persistPath, 'utf-8');
-        const parsed = JSON.parse(data);
-        
-        // Reconstruct maps
-        parsed.identities.forEach((identity: any) => {
-          // Convert date strings back to Date objects
-          identity.firstSeen = new Date(identity.firstSeen);
-          identity.lastSeen = new Date(identity.lastSeen);
-          identity.roleHistory.forEach((r: any) => {
-            r.timestamp = new Date(r.timestamp);
-          });
-          identity.perspectiveHistory.forEach((p: any) => {
-            p.timestamp = new Date(p.timestamp);
-          });
-          
-          this.identities.set(identity.agentId, identity);
-          this.tokenToAgent.set(identity.authToken, identity.agentId);
-          this.nameToAgent.set(identity.displayName, identity.agentId); // v3.2: Track name mapping
-          
-          if (identity.currentSessionId) {
-            this.sessionToAgent.set(identity.currentSessionId, identity.agentId);
-          }
-        });
+        const data = await fsPromises.readFile(this.persistPath, 'utf-8');
+        this.parseIdentityData(data);
       }
     } catch (error) {
       console.error('Failed to load identities:', error);
     }
   }
+  
+  /**
+   * Parse identity data from JSON string
+   */
+  private parseIdentityData(data: string): void {
+    const parsed = JSON.parse(data);
+    
+    // Reconstruct maps
+    parsed.identities.forEach((identity: any) => {
+      // Convert date strings back to Date objects
+      identity.firstSeen = new Date(identity.firstSeen);
+      identity.lastSeen = new Date(identity.lastSeen);
+      identity.roleHistory.forEach((r: any) => {
+        r.timestamp = new Date(r.timestamp);
+      });
+      identity.perspectiveHistory.forEach((p: any) => {
+        p.timestamp = new Date(p.timestamp);
+      });
+      
+      this.identities.set(identity.agentId, identity);
+      this.tokenToAgent.set(identity.authToken, identity.agentId);
+      this.nameToAgent.set(identity.displayName, identity.agentId); // v3.2: Track name mapping
+      
+      if (identity.currentSessionId) {
+        this.sessionToAgent.set(identity.currentSessionId, identity.agentId);
+      }
+    });
+  }
 
   /**
    * Save identities to disk
    */
-  private saveIdentities(): void {
+  private async saveIdentities(): Promise<void> {
     try {
       const data = {
         identities: Array.from(this.identities.values()),
         version: '3.2.0'
       };
       
-      fs.writeFileSync(this.persistPath, JSON.stringify(data, null, 2));
+      await fsPromises.writeFile(this.persistPath, JSON.stringify(data, null, 2));
     } catch (error) {
       console.error('Failed to save identities:', error);
     }

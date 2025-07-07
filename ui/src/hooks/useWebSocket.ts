@@ -30,7 +30,8 @@ export function useWebSocket({
         setConnectionStatus('connected')
         reconnectCount.current = 0
         
-        // Subscribe to dashboard updates
+        // TODO: Implement dashboard authentication flow
+        // For now, this will be rejected by server if not authenticated
         ws.send(JSON.stringify({ type: 'subscribe-dashboard' }))
       }
 

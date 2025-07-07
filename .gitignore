@@ -1,0 +1,43 @@
+# Logs
+*.log
+logs/
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Temporary files
+*.tmp
+*.temp
+
+# Test outputs
+coverage/
+.nyc_output/
+
+# Claude-Collab specific
+.claude-collab/identities.json
+.claude-collab/DISCUSSION_BOARD.md
+.claude-collab/tasks/
+.claude-collab/messages/
+.claude-collab/memory/
+.claude-collab/decisions/

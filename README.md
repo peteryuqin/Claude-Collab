@@ -1,8 +1,8 @@
-# Claude-Collab v3.4.0 - Practical Collaboration Edition! 🚀✨
+# Claude-Collab v3.4.1 - Stable & Production-Ready! 🚀✨
 
-## The AI Collaboration Framework That Prevents Echo Chambers - Now with Ghost Session Cleanup & Smart Identity!
+## The AI Collaboration Framework That Prevents Echo Chambers - Now Actually Works!
 
-Claude-Collab v3.4.0 is the unified platform that combines:
+Claude-Collab v3.4.1 is the unified platform that combines:
 - 🎵 **Real-time collaboration** (from Claude-Collab v1)
 - 🎼 **Advanced orchestration** (from Claude-Flow)
 - 🛡️ **Anti-echo-chamber protection** (preventing AI groupthink)
@@ -12,6 +12,109 @@ Claude-Collab v3.4.0 is the unified platform that combines:
 - ⚡ **Enhanced real-time updates** (NEW in v3.2.0!)
 - 📋 **Version compatibility warnings** (NEW in v3.2.0!)
 - 🎯 **Rich identity cards with achievements** (NEW in v3.2.0!)
+
+## 🏃 Getting Started in 2 Minutes
+
+### What is Claude-Collab?
+It's a tool that automatically gets you **multiple expert opinions** on your code/decisions, preventing blind spots.
+
+### Simplest Usage:
+
+**Terminal 1:**
+```bash
+# Start the server (keep it running)
+cd Claude-Collab
+PRACTICAL_MODE=true npm start
+```
+
+**Terminal 2:**
+```bash
+# Ask a question and get multiple perspectives
+./bin/cc swarm "Should I use MongoDB or PostgreSQL?" --max-agents 3
+
+# Or analyze code
+./bin/cc swarm "Review security of my login function" --strategy review
+```
+
+**View Results:**
+```bash
+cat .claude-collab/DISCUSSION_BOARD.md
+```
+
+That's it! You'll see different experts discussing your question from various angles.
+
+## 🤔 How It Works
+
+Claude-Collab creates multiple AI "experts" that discuss your topic from different perspectives:
+
+```
+You: "Should I use React or Vue?"
+├── Performance Expert: "React has better performance for large apps..."
+├── Learning Expert: "Vue is easier to learn for beginners..."
+├── Ecosystem Expert: "React has more third-party libraries..."
+└── Maintenance Expert: "Vue's single-file components are cleaner..."
+```
+
+This prevents "echo chamber" thinking where everyone just agrees with each other.
+
+## 📚 Simple Examples
+
+### Example 1: Code Security Review
+```javascript
+// Your problematic code
+const login = (username, password) => {
+  const query = `SELECT * FROM users WHERE name='${username}'`; // SQL injection risk!
+}
+
+// Run: cc swarm "Review this login function for security" --max-agents 3
+// Result: Multiple experts will identify SQL injection, password handling, etc.
+```
+
+### Example 2: Technology Decision
+```bash
+cc swarm "Should we migrate from Express to Fastify?" --strategy review
+
+# You'll get perspectives on:
+# - Performance implications
+# - Migration complexity
+# - Ecosystem compatibility
+# - Team learning curve
+```
+
+### Example 3: Write Your Own Script
+```javascript
+// my-review.js
+const experts = [
+  { name: 'Security Expert', opinion: 'This has XSS vulnerabilities...' },
+  { name: 'Performance Expert', opinion: 'Consider caching here...' },
+  { name: 'UX Expert', opinion: 'Users will find this confusing...' }
+];
+// Run: node my-review.js
+```
+
+### 🐛 What's New in v3.4.1? (Critical Bug Fixes)
+
+**🔌 Connection Stability** - Fixed major connection issues:
+- Fixed `ConnectionManager is not defined` error in CLI tools
+- Rewrote connection helper with proper WebSocket reconnection
+- Added exponential backoff for reconnection attempts
+- Clear error messages for different connection failures
+
+**💾 Identity Manager Robustness** - No more data corruption:
+- Added JSON validation and automatic recovery
+- Implemented backup/restore mechanism
+- Safe parsing with field validation
+- Atomic file writes to prevent corruption
+
+**🐝 Swarm Manager** - Fixed string escaping:
+- Properly handles objectives with quotes and special characters
+- Uses JSON.stringify for safe string interpolation
+- No more syntax errors with complex commands
+
+**📝 Updated Examples** - All examples now work:
+- Fixed WebSocket message formats
+- Correct registration and authentication flow
+- Added simple, working examples for beginners
 
 ### 🚀 What's New in v3.4.0?
 
@@ -95,7 +198,7 @@ cd ui && npm start
 ### Installation
 
 ```bash
-npm install -g claude-collab@3.4.0
+npm install -g claude-collab@3.4.1
 ```
 
 ### Create Your First Project

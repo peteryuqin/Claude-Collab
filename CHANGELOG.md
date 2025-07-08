@@ -2,6 +2,37 @@
 
 All notable changes to Claude-Collab will be documented in this file.
 
+## [3.4.1] - 2025-07-08
+
+### 🐛 Critical Bug Fixes
+
+#### Connection Stability
+- Fixed undefined `ConnectionManager` error in CLI connection helper
+- Rewrote connection helper to use WebSocket directly with proper reconnection
+- Added exponential backoff for reconnection attempts
+- Improved error messages for connection failures
+
+#### Identity Manager Robustness
+- Added JSON validation and automatic recovery for corrupted identities.json
+- Implemented backup/restore mechanism for identity persistence
+- Added safe parsing with field validation
+- Atomic file writes to prevent corruption
+
+#### Swarm Manager
+- Fixed string escaping in generated agent scripts
+- Properly handles objectives with quotes and special characters
+- Uses JSON.stringify for safe string interpolation
+
+#### Examples
+- Updated all examples to use correct WebSocket message formats
+- Fixed registration flow to match server expectations
+- Added proper authentication after registration
+
+### 🛠️ Technical Improvements
+- Clean build process with proper TypeScript compilation
+- Added comprehensive test suite for all fixes
+- Better error handling throughout the codebase
+
 ## [3.4.0] - 2025-07-07
 
 ### 🎯 Practical Mode - Making Claude-Collab Actually Useful

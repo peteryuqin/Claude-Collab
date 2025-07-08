@@ -178,33 +178,64 @@ class SwarmManager {
      * Create agent script that will run in separate process
      */
     createAgentScript(config) {
+        // Safely escape strings for JavaScript
+        const escapeForJS = (str) => {
+            if (!str)
+                return '';
+            return str
+                .replace(/\\/g, '\\\\')
+                .replace(/'/g, "\\'")
+                .replace(/"/g, '\\"')
+                .replace(/\n/g, '\\n')
+                .replace(/\r/g, '\\r')
+                .replace(/\t/g, '\\t');
+        };
+        // Prepare safe values
+        const safeConfig = {
+            name: escapeForJS(config.name),
+            role: escapeForJS(config.role),
+            perspective: escapeForJS(config.perspective),
+            taskDescription: escapeForJS(config.task.description),
+            connectionHelperPath: escapeForJS(path.join(__dirname, 'connection-helper')),
+            serverUrl: escapeForJS(this.serverUrl),
+            objective: escapeForJS(this.objective)
+        };
         return `
-const { CLIConnectionHelper } = require('${path.join(__dirname, 'connection-helper')}');
+const { CLIConnectionHelper } = require('${safeConfig.connectionHelperPath}');
 
 async function runAgent() {
-  console.log('Starting ${config.name}...');
+  console.log('Starting ${safeConfig.name}...');
   
-  const connectionHelper = new CLIConnectionHelper('${this.serverUrl}');
+  const connectionHelper = new CLIConnectionHelper('${safeConfig.serverUrl}');
   let registered = false;
   let authToken = null;
+  
+  // Config passed as data
+  const agentConfig = ${JSON.stringify({
+            name: config.name,
+            role: config.role,
+            perspective: config.perspective,
+            task: config.task,
+            objective: this.objective
+        })};
   
   connectionHelper.on('connected', () => {
     if (!registered) {
       // Register agent
       connectionHelper.send({
         type: 'register',
-        agentName: '${config.name}',
-        role: '${config.role}',
+        agentName: agentConfig.name,
+        role: agentConfig.role,
         forceNew: true
       });
     } else {
       // Join session
       connectionHelper.send({
         type: 'auth',
-        agentName: '${config.name}',
+        agentName: agentConfig.name,
         authToken: authToken,
-        role: '${config.role}',
-        perspective: '${config.perspective}',
+        role: agentConfig.role,
+        perspective: agentConfig.perspective,
         clientVersion: '3.2.3'
       });
     }
@@ -224,14 +255,14 @@ async function runAgent() {
       setTimeout(() => {
         connectionHelper.send({
           type: 'message',
-          text: 'Hello! I\\'m ${config.name}, a ${config.role} with ${config.perspective} perspective. I\\'m here to work on: ${config.task.description}'
+          text: \`Hello! I'm \${agentConfig.name}, a \${agentConfig.role} with \${agentConfig.perspective} perspective. I'm here to work on: \${agentConfig.task.description}\`
         });
         
         // Start working on task
         setTimeout(() => {
           connectionHelper.send({
             type: 'message',
-            text: 'Starting work on: ${config.task.description}. Objective: ${this.objective}'
+            text: \`Starting work on: \${agentConfig.task.description}. Objective: \${agentConfig.objective}\`
           });
         }, 2000);
       }, 1000);
@@ -241,11 +272,11 @@ async function runAgent() {
       console.log(\`[\${message.agentName}]: \${message.text}\`);
       
       // Simple response logic
-      if (message.text.includes('${config.name}')) {
+      if (message.text.includes(agentConfig.name)) {
         setTimeout(() => {
           connectionHelper.send({
             type: 'message',
-            text: 'Acknowledged! Working on ${config.task.description}...'
+            text: \`Acknowledged! Working on \${agentConfig.task.description}...\`
           });
         }, 1000);
       }

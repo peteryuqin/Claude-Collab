@@ -7,6 +7,7 @@ import { EventEmitter } from 'events';
 export interface ServerConfig {
     port: number;
     enableAntiEcho: boolean;
+    practicalMode?: boolean;
     diversityConfig?: {
         minimumDiversity: number;
         disagreementQuota: number;
@@ -29,6 +30,8 @@ export declare class ClaudeCollabServer extends EventEmitter {
     private realtimeEnhancer;
     private projectPath;
     private cleanupInterval?;
+    private lastDiversityWarning;
+    private diversityWarningCooldown;
     constructor(config?: ServerConfig);
     /**
      * Start the HarmonyCode server

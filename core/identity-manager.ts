@@ -106,7 +106,7 @@ export class IdentityManager {
   }
   
   /**
-   * Synchronous save for backward compatibility
+   * Synchronous save for backward compatibility with backup
    */
   private saveIdentitiesSync(): void {
     try {
@@ -115,9 +115,36 @@ export class IdentityManager {
         version: '3.2.0'
       };
       
-      fs.writeFileSync(this.persistPath, JSON.stringify(data, null, 2));
+      // Create backup if main file exists
+      if (fs.existsSync(this.persistPath)) {
+        const backupPath = this.persistPath + '.backup';
+        try {
+          fs.copyFileSync(this.persistPath, backupPath);
+        } catch (error) {
+          console.warn('Failed to create backup (sync):', error);
+        }
+      }
+      
+      // Write to temporary file first
+      const tempPath = this.persistPath + '.tmp';
+      fs.writeFileSync(tempPath, JSON.stringify(data, null, 2));
+      
+      // Validate the temporary file
+      const tempData = fs.readFileSync(tempPath, 'utf-8');
+      JSON.parse(tempData); // This will throw if invalid
+      
+      // Move temp file to main file
+      fs.renameSync(tempPath, this.persistPath);
+      
     } catch (error) {
       console.error('Failed to save identities (sync):', error);
+      // Try to clean up temp file if it exists
+      const tempPath = this.persistPath + '.tmp';
+      if (fs.existsSync(tempPath)) {
+        try {
+          fs.unlinkSync(tempPath);
+        } catch {}
+      }
     }
   }
 
@@ -540,35 +567,121 @@ export class IdentityManager {
   }
   
   /**
-   * Parse identity data from JSON string
+   * Parse identity data from JSON string with validation and recovery
    */
   private parseIdentityData(data: string): void {
-    const parsed = JSON.parse(data);
-    
-    // Reconstruct maps
-    parsed.identities.forEach((identity: any) => {
-      // Convert date strings back to Date objects
-      identity.firstSeen = new Date(identity.firstSeen);
-      identity.lastSeen = new Date(identity.lastSeen);
-      identity.roleHistory.forEach((r: any) => {
-        r.timestamp = new Date(r.timestamp);
-      });
-      identity.perspectiveHistory.forEach((p: any) => {
-        p.timestamp = new Date(p.timestamp);
-      });
+    try {
+      // Try to parse JSON
+      const parsed = JSON.parse(data);
       
-      this.identities.set(identity.agentId, identity);
-      this.tokenToAgent.set(identity.authToken, identity.agentId);
-      this.nameToAgent.set(identity.displayName, identity.agentId); // v3.2: Track name mapping
-      
-      if (identity.currentSessionId) {
-        this.sessionToAgent.set(identity.currentSessionId, identity.agentId);
+      // Validate structure
+      if (!parsed || typeof parsed !== 'object') {
+        throw new Error('Invalid identities file format');
       }
-    });
+      
+      // Ensure identities array exists
+      if (!Array.isArray(parsed.identities)) {
+        console.warn('Missing identities array, initializing empty');
+        parsed.identities = [];
+      }
+      
+      // Reconstruct maps with validation
+      parsed.identities.forEach((identity: any, index: number) => {
+        try {
+          // Validate required fields
+          if (!identity.agentId || !identity.displayName || !identity.authToken) {
+            console.warn(`Skipping invalid identity at index ${index}: missing required fields`);
+            return;
+          }
+          
+          // Convert date strings back to Date objects with validation
+          identity.firstSeen = this.parseDate(identity.firstSeen) || new Date();
+          identity.lastSeen = this.parseDate(identity.lastSeen) || new Date();
+          
+          // Ensure arrays exist
+          identity.roleHistory = identity.roleHistory || [];
+          identity.perspectiveHistory = identity.perspectiveHistory || [];
+          
+          // Parse dates in history arrays
+          identity.roleHistory.forEach((r: any) => {
+            r.timestamp = this.parseDate(r.timestamp) || new Date();
+          });
+          identity.perspectiveHistory.forEach((p: any) => {
+            p.timestamp = this.parseDate(p.timestamp) || new Date();
+          });
+          
+          // Ensure stats exist with defaults
+          identity.stats = identity.stats || {
+            totalSessions: 0,
+            totalMessages: 0,
+            totalTasks: 0,
+            totalEdits: 0,
+            diversityScore: 0.5,
+            agreementRate: 0.5,
+            evidenceRate: 0.5
+          };
+          
+          this.identities.set(identity.agentId, identity);
+          this.tokenToAgent.set(identity.authToken, identity.agentId);
+          this.nameToAgent.set(identity.displayName, identity.agentId);
+          
+          if (identity.currentSessionId) {
+            this.sessionToAgent.set(identity.currentSessionId, identity.agentId);
+          }
+        } catch (error) {
+          console.error(`Failed to parse identity at index ${index}:`, error);
+        }
+      });
+      
+      console.log(`Successfully loaded ${this.identities.size} identities`);
+    } catch (error) {
+      console.error('Failed to parse identities file:', error);
+      // Try to recover from backup
+      this.tryRecoverFromBackup();
+    }
+  }
+  
+  /**
+   * Safely parse date string
+   */
+  private parseDate(dateStr: any): Date | null {
+    if (!dateStr) return null;
+    try {
+      const date = new Date(dateStr);
+      return isNaN(date.getTime()) ? null : date;
+    } catch {
+      return null;
+    }
+  }
+  
+  /**
+   * Try to recover from backup file
+   */
+  private tryRecoverFromBackup(): void {
+    const backupPath = this.persistPath + '.backup';
+    try {
+      if (fs.existsSync(backupPath)) {
+        console.log('Attempting to recover from backup...');
+        const backupData = fs.readFileSync(backupPath, 'utf-8');
+        const parsed = JSON.parse(backupData);
+        
+        // If backup is valid, restore it
+        if (parsed && Array.isArray(parsed.identities)) {
+          fs.copyFileSync(backupPath, this.persistPath);
+          this.parseIdentityData(backupData);
+          console.log('Successfully recovered from backup');
+        }
+      } else {
+        console.log('No backup file found, starting with empty identities');
+      }
+    } catch (error) {
+      console.error('Failed to recover from backup:', error);
+      console.log('Starting with empty identities');
+    }
   }
 
   /**
-   * Save identities to disk
+   * Save identities to disk with backup
    */
   private async saveIdentities(): Promise<void> {
     try {
@@ -577,9 +690,36 @@ export class IdentityManager {
         version: '3.2.0'
       };
       
-      await fsPromises.writeFile(this.persistPath, JSON.stringify(data, null, 2));
+      // Create backup if main file exists
+      if (fs.existsSync(this.persistPath)) {
+        const backupPath = this.persistPath + '.backup';
+        try {
+          await fsPromises.copyFile(this.persistPath, backupPath);
+        } catch (error) {
+          console.warn('Failed to create backup:', error);
+        }
+      }
+      
+      // Write to temporary file first
+      const tempPath = this.persistPath + '.tmp';
+      await fsPromises.writeFile(tempPath, JSON.stringify(data, null, 2));
+      
+      // Validate the temporary file
+      const tempData = await fsPromises.readFile(tempPath, 'utf-8');
+      JSON.parse(tempData); // This will throw if invalid
+      
+      // Move temp file to main file
+      await fsPromises.rename(tempPath, this.persistPath);
+      
     } catch (error) {
       console.error('Failed to save identities:', error);
+      // Try to clean up temp file if it exists
+      const tempPath = this.persistPath + '.tmp';
+      if (fs.existsSync(tempPath)) {
+        try {
+          await fsPromises.unlink(tempPath);
+        } catch {}
+      }
     }
   }
 }

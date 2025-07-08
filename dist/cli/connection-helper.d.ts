@@ -1,22 +1,27 @@
 export class CLIConnectionHelper extends EventEmitter<[never]> {
     constructor(serverUrl: any);
     serverUrl: any;
-    connectionManager: any;
+    ws: WebSocket | null;
     isAuthenticated: boolean;
+    reconnectAttempts: number;
+    maxReconnectAttempts: number;
+    reconnectDelay: number;
+    maxReconnectDelay: number;
+    reconnectBackoffMultiplier: number;
+    messageQueue: any[];
+    isConnected: boolean;
+    isReconnecting: boolean;
+    manualDisconnect: boolean;
     /**
      * Connect to server with automatic retry
      */
     connect(): Promise<any>;
     /**
-     * Set up event handlers for connection manager
+     * Attempt to reconnect with exponential backoff
      */
-    setupEventHandlers(): void;
+    attemptReconnect(): Promise<void>;
     /**
-     * Handle connection errors with user-friendly messages
-     */
-    handleConnectionError(error: any): void;
-    /**
-     * Send a message through the connection
+     * Send a message to the server
      */
     send(data: any): void;
     /**
@@ -24,13 +29,27 @@ export class CLIConnectionHelper extends EventEmitter<[never]> {
      */
     disconnect(): void;
     /**
+     * Force reconnect
+     */
+    forceReconnect(): Promise<any>;
+    /**
      * Get connection state
      */
-    getState(): any;
+    getState(): {
+        isConnected: boolean;
+        isReconnecting: boolean;
+        reconnectAttempts: number;
+        queuedMessages: number;
+    };
     /**
-     * Force reconnection
+     * Handle connection errors with user-friendly messages
      */
-    forceReconnect(): void;
+    handleConnectionError(error: any): void;
 }
+/**
+ * Create connection with defaults
+ */
+export function createConnection(serverUrl?: string): Promise<CLIConnectionHelper>;
 import { EventEmitter } from "events";
+import WebSocket = require("ws");
 //# sourceMappingURL=connection-helper.d.ts.map

@@ -45,6 +45,18 @@ export declare class IdentityManager {
     private persistPath;
     constructor(workspacePath?: string);
     /**
+     * Initialize with async operations
+     */
+    initialize(): Promise<void>;
+    /**
+     * Synchronous fallback for constructor
+     */
+    private loadIdentitiesSync;
+    /**
+     * Synchronous save for backward compatibility with backup
+     */
+    private saveIdentitiesSync;
+    /**
      * Register a new agent or retrieve existing one
      */
     registerAgent(displayName: string, role?: string): AgentIdentity;
@@ -141,7 +153,19 @@ export declare class IdentityManager {
      */
     private loadIdentities;
     /**
-     * Save identities to disk
+     * Parse identity data from JSON string with validation and recovery
+     */
+    private parseIdentityData;
+    /**
+     * Safely parse date string
+     */
+    private parseDate;
+    /**
+     * Try to recover from backup file
+     */
+    private tryRecoverFromBackup;
+    /**
+     * Save identities to disk with backup
      */
     private saveIdentities;
 }

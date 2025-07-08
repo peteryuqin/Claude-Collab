@@ -126,9 +126,9 @@ class MessageRouter extends events_1.EventEmitter {
                 type: 'status-response',
                 session: {
                     id: session.id,
-                    name: session.name,
-                    role: session.role,
-                    perspective: session.perspective
+                    name: session.agentIdentity?.displayName || 'Unknown',
+                    role: session.currentRole || 'unknown',
+                    perspective: session.currentPerspective || 'unknown'
                 },
                 server: {
                     version: '3.0.0',

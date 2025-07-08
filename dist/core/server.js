@@ -52,6 +52,8 @@ const realtime_enhancer_1 = require("./realtime-enhancer");
 class ClaudeCollabServer extends events_1.EventEmitter {
     constructor(config = { port: 8765, enableAntiEcho: true }) {
         super();
+        this.lastDiversityWarning = 0; // Cooldown for diversity warnings
+        this.diversityWarningCooldown = 30000; // 30 seconds
         this.config = config;
         this.projectPath = process.cwd();
         this.identityManager = new identity_manager_1.IdentityManager(path.join(this.projectPath, '.claude-collab'));
@@ -79,6 +81,7 @@ class ClaudeCollabServer extends events_1.EventEmitter {
 ║                                                        ║
 ║  Real-time collaboration with persistent identity      ║
 ║  Anti-echo-chamber: ${this.config.enableAntiEcho ? 'ENABLED ✓' : 'DISABLED'}                           ║
+║  Mode: ${this.config.practicalMode ? 'PRACTICAL (warnings only)' : 'STRICT (blocking)'}              ║
 ╚════════════════════════════════════════════════════════╝
     `);
         console.log(`🚀 Server running on ws://localhost:${this.config.port}`);
@@ -156,7 +159,7 @@ class ClaudeCollabServer extends events_1.EventEmitter {
                     ? `Client has older patch: ${clientVersion} (latest: ${serverVersion})`
                     : `Client has newer patch: ${clientVersion} (server: ${serverVersion})`,
                 severity: 'warning',
-                upgradeAction: isClientOlder ? `npm install -g harmonycode@${serverVersion}` : undefined
+                upgradeAction: isClientOlder ? `npm install -g claude-collab@${serverVersion}` : undefined
             };
         }
         return null;
@@ -317,7 +320,7 @@ class ClaudeCollabServer extends events_1.EventEmitter {
         try {
             const message = JSON.parse(data.toString());
             // Log message for analysis
-            console.log(`💬 ${session.name}: ${message.type}`);
+            console.log(`💬 ${session.agentIdentity?.displayName || 'Unknown'}: ${message.type}`);
             // Apply diversity middleware if enabled
             if (this.config.enableAntiEcho && this.shouldCheckDiversity(message.type)) {
                 const diversityCheck = await this.diversity.checkMessage({
@@ -326,16 +329,28 @@ class ClaudeCollabServer extends events_1.EventEmitter {
                     type: message.type,
                     evidence: message.evidence
                 });
-                if (!diversityCheck.allowed) {
+                if (!diversityCheck.allowed && !this.config.practicalMode) {
+                    // In strict mode, block the message
+                    console.log(`🚨 Diversity intervention for ${session.agentIdentity?.displayName || 'Unknown'}: ${diversityCheck.reason || 'No reason provided'}`);
                     // Send intervention requirement
                     session.ws.send(JSON.stringify({
                         type: 'diversity-intervention',
-                        reason: diversityCheck.reason,
-                        requiredAction: diversityCheck.requiredAction,
-                        suggestions: diversityCheck.suggestions
+                        reason: diversityCheck.reason || 'Diversity requirements not met',
+                        requiredAction: diversityCheck.requiredAction || 'Please provide a different perspective',
+                        suggestions: diversityCheck.suggestions || []
                     }));
-                    console.log(`❌ Diversity check failed: ${diversityCheck.reason}`);
+                    console.log(`❌ Diversity check failed: ${diversityCheck.reason || 'No specific reason'}`);
                     return;
+                }
+                else if (!diversityCheck.allowed && this.config.practicalMode) {
+                    // In practical mode, just warn but allow the message
+                    console.log(`⚠️  Diversity warning for ${session.agentIdentity?.displayName || 'Unknown'}: ${diversityCheck.reason || 'Low diversity'}`);
+                    // Send warning but don't block
+                    session.ws.send(JSON.stringify({
+                        type: 'diversity-warning',
+                        reason: diversityCheck.reason || 'Consider adding diverse perspectives',
+                        suggestions: diversityCheck.suggestions || []
+                    }));
                 }
             }
             // Route message through orchestration if needed
@@ -391,7 +406,7 @@ class ClaudeCollabServer extends events_1.EventEmitter {
             this.identityManager.updateAgentActivity(session.agentId);
         }
         catch (error) {
-            console.error(`Error handling message from ${session.name}:`, error);
+            console.error(`Error handling message from ${session.agentIdentity?.displayName || 'Unknown'}:`, error);
             session.ws.send(JSON.stringify({
                 type: 'error',
                 message: 'Failed to process message'
@@ -558,12 +573,17 @@ class ClaudeCollabServer extends events_1.EventEmitter {
                     recentInterventions: metrics.interventions
                 }
             });
-            // Log warnings if needed
-            if (metrics.agreementRate > 0.8) {
-                console.log('⚠️  High agreement rate detected - echo chamber risk!');
-            }
-            if (metrics.overallDiversity < 0.5) {
-                console.log('⚠️  Low diversity score - consider perspective rotation');
+            // Log warnings if needed (with cooldown)
+            const now = Date.now();
+            if (now - this.lastDiversityWarning > this.diversityWarningCooldown) {
+                if (metrics.agreementRate > 0.8) {
+                    console.log('⚠️  High agreement rate detected - echo chamber risk!');
+                    this.lastDiversityWarning = now;
+                }
+                else if (metrics.overallDiversity < 0.5) {
+                    console.log('⚠️  Low diversity score - consider perspective rotation');
+                    this.lastDiversityWarning = now;
+                }
             }
         }, 30000); // Every 30 seconds
     }
@@ -721,7 +741,7 @@ class ClaudeCollabServer extends events_1.EventEmitter {
      * Handle session disconnect
      */
     handleDisconnect(session) {
-        console.log(`👋 ${session.name} disconnected`);
+        console.log(`👋 ${session.agentIdentity?.displayName || 'Unknown'} disconnected`);
         this.sessions.removeSession(session.id);
         this.diversity.removeAgent(session.id);
         this.orchestration.handleAgentDisconnect(session.id);
@@ -731,7 +751,7 @@ class ClaudeCollabServer extends events_1.EventEmitter {
      * Handle WebSocket errors
      */
     handleError(session, error) {
-        console.error(`Error in session ${session.name}:`, error);
+        console.error(`Error in session ${session.agentIdentity?.displayName || 'Unknown'}:`, error);
     }
     /**
      * Check if message type should be diversity-checked
@@ -904,11 +924,19 @@ class ClaudeCollabServer extends events_1.EventEmitter {
      * Handle dashboard subscription
      */
     async handleDashboardSubscription(session) {
+        // v3.2.1: Verify session is authenticated before allowing dashboard access
+        if (!session.agentId || !session.agentIdentity) {
+            session.ws.send(JSON.stringify({
+                type: 'error',
+                message: 'Authentication required for dashboard access'
+            }));
+            return;
+        }
         // Mark session as dashboard subscriber
         session.isDashboardSubscriber = true;
         // Send initial data
         await this.sendDashboardData(session);
-        console.log(`📊 Dashboard subscribed: ${session.id}`);
+        console.log(`📊 Dashboard subscribed: ${session.id} (${session.agentIdentity.displayName})`);
     }
     /**
      * Send dashboard data to subscriber
@@ -989,8 +1017,9 @@ if (require.main === module) {
     const server = new ClaudeCollabServer({
         port: parseInt(process.env.CLAUDE_COLLAB_PORT || '8765'),
         enableAntiEcho: process.env.DISABLE_ANTI_ECHO !== 'true',
+        practicalMode: process.env.PRACTICAL_MODE === 'true',
         diversityConfig: {
-            minimumDiversity: 0.6,
+            minimumDiversity: 0.3,
             disagreementQuota: 0.3,
             evidenceThreshold: 0.5
         },

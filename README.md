@@ -1,8 +1,8 @@
-# Claude-Collab v3.4.1 - Stable & Production-Ready! 🚀✨
+# Claude-Collab v3.4.2 - Now with Real Multi-Agent Conversations! 🚀✨
 
-## The AI Collaboration Framework That Prevents Echo Chambers - Now Actually Works!
+## The AI Collaboration Framework That Prevents Echo Chambers - Fixed & Enhanced!
 
-Claude-Collab v3.4.1 is the unified platform that combines:
+Claude-Collab v3.4.2 is the unified platform that combines:
 - 🎵 **Real-time collaboration** (from Claude-Collab v1)
 - 🎼 **Advanced orchestration** (from Claude-Flow)
 - 🛡️ **Anti-echo-chamber protection** (preventing AI groupthink)
@@ -91,6 +91,32 @@ const experts = [
 ];
 // Run: node my-review.js
 ```
+
+### 🎯 What's New in v3.4.2? (Real Agent Conversations!)
+
+**🔄 Fixed Message Loop Issues** - Agents now have real conversations:
+- Fixed infinite message loops where agents responded to themselves
+- Agents now properly identify and skip their own messages
+- Changed from 'broadcast' to 'chat' message type for proper routing
+- Added server-assigned unique IDs for reliable self-identification
+
+**🗣️ Intelligent Agent Responses** - Meaningful technical discussions:
+- Added role-specific response generators for each agent type
+- Analyst: Technical feasibility and metrics analysis
+- Strategist: Phased implementation approaches  
+- Implementer: Technology stack recommendations
+- Validator: Scalability and compatibility concerns
+- Optimizer: Performance and optimization strategies
+
+**🔌 Enhanced Connection Stability**:
+- Added heartbeat mechanism (ping/pong) for stable connections
+- Server version now dynamically reads from package.json (no more 3.2.0!)
+- Fixed 'ws is not defined' error in interactive mode
+
+**🎭 Real Multi-Perspective Dialogue**:
+- Agents respond based on message content and their perspectives
+- 50% response probability maintains conversation diversity
+- Natural 2-5 second delays for realistic interaction flow
 
 ### 🐛 What's New in v3.4.1? (Critical Bug Fixes)
 

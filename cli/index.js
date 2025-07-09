@@ -981,7 +981,7 @@ async function startInteractiveSession(connectionHelper, agentName, agentId) {
   });
   
   // Handle incoming messages
-  ws.on('message', (data) => {
+  connectionHelper.ws.on('message', (data) => {
     const message = JSON.parse(data);
     
     switch (message.type) {

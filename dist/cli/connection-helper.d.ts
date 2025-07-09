@@ -12,6 +12,8 @@ export class CLIConnectionHelper extends EventEmitter<[never]> {
     isConnected: boolean;
     isReconnecting: boolean;
     manualDisconnect: boolean;
+    pingInterval: NodeJS.Timeout | null;
+    pingTimeout: NodeJS.Timeout | null;
     /**
      * Connect to server with automatic retry
      */
@@ -45,6 +47,18 @@ export class CLIConnectionHelper extends EventEmitter<[never]> {
      * Handle connection errors with user-friendly messages
      */
     handleConnectionError(error: any): void;
+    /**
+     * Start heartbeat mechanism
+     */
+    startHeartbeat(): void;
+    /**
+     * Stop heartbeat mechanism
+     */
+    stopHeartbeat(): void;
+    /**
+     * Handle ping timeout
+     */
+    handlePingTimeout(): void;
 }
 /**
  * Create connection with defaults

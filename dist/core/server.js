@@ -106,7 +106,8 @@ class ClaudeCollabServer extends events_1.EventEmitter {
      * Check version compatibility between client and server (v3.2)
      */
     checkVersionCompatibility(clientVersion) {
-        const serverVersion = '3.2.0';
+        const packageJson = require('../../package.json');
+        const serverVersion = packageJson.version;
         if (!clientVersion) {
             return {
                 message: 'Client version unknown - please upgrade your CLI',

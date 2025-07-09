@@ -21,6 +21,8 @@ class CLIConnectionHelper extends EventEmitter {
     this.isConnected = false;
     this.isReconnecting = false;
     this.manualDisconnect = false;
+    this.pingInterval = null;
+    this.pingTimeout = null;
   }
 
   /**
@@ -48,6 +50,9 @@ class CLIConnectionHelper extends EventEmitter {
             this.send(msg);
           }
           
+          // Start heartbeat
+          this.startHeartbeat();
+          
           this.emit('connected', { 
             reconnected: this.reconnectAttempts > 0,
             attemptCount: this.reconnectAttempts 
@@ -58,6 +63,15 @@ class CLIConnectionHelper extends EventEmitter {
         this.ws.on('message', (data) => {
           try {
             const message = JSON.parse(data.toString());
+            // Reset heartbeat timeout on any message
+            if (this.pingTimeout) {
+              clearTimeout(this.pingTimeout);
+              this.pingTimeout = setTimeout(() => this.handlePingTimeout(), 35000);
+            }
+            // Handle pong response
+            if (message.type === 'pong') {
+              return; // Don't emit pong messages
+            }
             this.emit('message', message);
           } catch (error) {
             console.error('Failed to parse message:', error);
@@ -67,6 +81,7 @@ class CLIConnectionHelper extends EventEmitter {
         this.ws.on('close', () => {
           clearTimeout(connectionTimeout);
           this.isConnected = false;
+          this.stopHeartbeat();
           if (!this.manualDisconnect && !this.isReconnecting) {
             console.log('⚠ Disconnected from server');
             this.emit('disconnected', { manual: false });
@@ -232,6 +247,47 @@ class CLIConnectionHelper extends EventEmitter {
 
     console.error(`\n❌ ${errorInfo.message}`);
     console.log(`💡 ${errorInfo.solution}\n`);
+  }
+
+  /**
+   * Start heartbeat mechanism
+   */
+  startHeartbeat() {
+    this.stopHeartbeat(); // Clear any existing heartbeat
+    
+    // Send ping every 30 seconds
+    this.pingInterval = setInterval(() => {
+      if (this.isConnected && this.ws && this.ws.readyState === WebSocket.OPEN) {
+        this.send({ type: 'ping' });
+      }
+    }, 30000);
+    
+    // Expect pong within 35 seconds
+    this.pingTimeout = setTimeout(() => this.handlePingTimeout(), 35000);
+  }
+
+  /**
+   * Stop heartbeat mechanism
+   */
+  stopHeartbeat() {
+    if (this.pingInterval) {
+      clearInterval(this.pingInterval);
+      this.pingInterval = null;
+    }
+    if (this.pingTimeout) {
+      clearTimeout(this.pingTimeout);
+      this.pingTimeout = null;
+    }
+  }
+
+  /**
+   * Handle ping timeout
+   */
+  handlePingTimeout() {
+    console.log('⚠️ Heartbeat timeout - connection may be stale');
+    if (this.ws) {
+      this.ws.close();
+    }
   }
 }
 

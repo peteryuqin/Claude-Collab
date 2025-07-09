@@ -1,6 +1,6 @@
 {
     "name": "claude-collab",
-    "version": "3.4.1",
+    "version": "3.4.2",
     "description": "Claude Collab - The AI collaboration framework that prevents echo chambers",
     "main": "dist/index.js",
     "bin": {

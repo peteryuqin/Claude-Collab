@@ -880,7 +880,7 @@ async function startInteractiveSession(connectionHelper, agentName, agentId) {
         rl.prompt();
     });
     // Handle incoming messages
-    ws.on('message', (data) => {
+    connectionHelper.ws.on('message', (data) => {
         const message = JSON.parse(data);
         switch (message.type) {
             case 'diversity-intervention':

@@ -2,6 +2,50 @@
 
 All notable changes to Claude-Collab will be documented in this file.
 
+## [3.4.2] - 2025-07-08
+
+### 🐛 Bug Fixes
+
+#### Version Management
+- Fixed hardcoded version number in server.ts (was showing 3.2.0 instead of actual version)
+- Server now dynamically reads version from package.json
+
+#### WebSocket Issues
+- Fixed 'ws is not defined' error in CLI interactive mode
+- Changed from undefined `ws` to `connectionHelper.ws`
+
+#### Connection Stability
+- Added heartbeat mechanism with ping/pong to maintain stable connections
+- Heartbeat sends ping every 30 seconds, expects pong within 35 seconds
+- Server now responds to ping messages with pong
+
+#### Multi-Agent Collaboration
+- **Fixed message loop issue** - agents were responding to their own messages infinitely
+- Changed message type from 'broadcast' to 'chat' to match server implementation
+- Added robust self-identification using server-assigned agent IDs
+- Agents now properly track their own ID to prevent self-responses
+
+### ✨ Improvements
+
+#### Agent Intelligence
+- Added role-specific response generators for meaningful conversations
+- Agents now provide actual technical insights based on their roles:
+  - Analyst: Technical feasibility and metrics
+  - Strategist: Phased implementation approaches
+  - Implementer: Technology stack recommendations
+  - Validator: Scalability and compatibility concerns
+  - Optimizer: Performance and optimization strategies
+
+#### Response Logic
+- Implemented perspective-based responses for different topics (API, security, etc.)
+- Added 50% response probability to maintain diversity
+- Random 2-5 second delays for more natural conversation flow
+
+### 🔧 Technical Details
+- Updated swarm-manager.js agent script generation
+- Improved message structure handling with proper field checks
+- Better error prevention with multiple ID validation methods
+
 ## [3.4.1] - 2025-07-08
 
 ### 🐛 Critical Bug Fixes

@@ -110,7 +110,8 @@ export class ClaudeCollabServer extends EventEmitter {
    * Check version compatibility between client and server (v3.2)
    */
   private checkVersionCompatibility(clientVersion?: string): { message: string; severity: 'warning' | 'error'; upgradeAction?: string } | null {
-    const serverVersion = '3.2.0';
+    const packageJson = require('../package.json');
+    const serverVersion = packageJson.version;
     
     if (!clientVersion) {
       return {
